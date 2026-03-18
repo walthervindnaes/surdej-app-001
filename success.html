@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tak for dit køb — Levain</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: #F7F3EC; color: #2C1E10;
+    min-height: 100vh; display: flex;
+    align-items: center; justify-content: center;
+    padding: 24px;
+  }
+  .card {
+    background: #FDFAF5; border: 0.5px solid rgba(44,30,16,0.12);
+    border-radius: 24px; padding: 56px 48px;
+    text-align: center; max-width: 480px; width: 100%;
+  }
+  .checkmark {
+    width: 64px; height: 64px; border-radius: 50%;
+    background: rgba(58,90,64,0.12);
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 28px;
+  }
+  .checkmark svg { width: 28px; height: 28px; }
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 32px; font-weight: 400; margin-bottom: 12px;
+  }
+  h1 em { font-style: italic; color: #D4854A; }
+  p { font-size: 15px; color: #7A6555; line-height: 1.7; margin-bottom: 32px; }
+  .btn {
+    display: inline-block; background: #2C1E10; color: #F7F3EC;
+    padding: 13px 28px; border-radius: 100px;
+    font-size: 14px; font-weight: 500; text-decoration: none;
+    transition: background 0.2s;
+  }
+  .btn:hover { background: #6B4226; }
+</style>
+</head>
+<body>
+  <div class="card">
+    <div class="checkmark">
+      <svg viewBox="0 0 28 28" fill="none">
+        <path d="M5 14l7 7 11-11" stroke="#3A5A40" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <h1>Tak for dit <em>køb!</em></h1>
+    <p>Din betaling er gennemført. Du vil snart modtage en bekræftelse på mail. Vi glæder os til at hjælpe dig med at bage dit perfekte surdejsbrød.</p>
+    <a href="/" class="btn">Gå tilbage til forsiden</a>
+  </div>
+</body>
+</html>

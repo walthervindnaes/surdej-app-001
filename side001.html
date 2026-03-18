@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Levain — Mit bageri</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{--cream:#F7F3EC;--white:#FDFAF5;--dark:#2C1E10;--mid:#6B4226;--amber:#D4854A;--amber-light:#F0B882;--green:#3A5A40;--muted:#7A6555;--border:rgba(44,30,16,0.1);--red:#A32D2D;}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--dark);min-height:100vh;overflow-x:hidden;}
+.topbar{position:fixed;top:0;left:0;right:0;z-index:300;height:60px;padding:0 16px;display:flex;align-items:center;justify-content:space-between;background:var(--white);border-bottom:0.5px solid var(--border);}
+.topbar-logo{font-family:'Playfair Display',serif;font-size:20px;color:var(--dark);}
+.topbar-logo span{font-style:italic;color:var(--amber);}
+.topbar-right{display:flex;align-items:center;gap:8px;}
+.topbar-btn{width:36px;height:36px;border-radius:50%;border:none;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;position:relative;transition:background 0.15s;}
+.topbar-btn:hover{background:var(--cream);}
+.notif-dot{position:absolute;top:6px;right:6px;width:8px;height:8px;border-radius:50%;background:var(--amber);border:1.5px solid var(--white);display:none;}
+.notif-dot.active{display:block;}
+.avatar{width:34px;height:34px;border-radius:50%;background:var(--amber);color:var(--white);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;cursor:pointer;}
+.hamburger{width:36px;height:36px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;cursor:pointer;border:none;background:transparent;}
+.hamburger span{display:block;width:22px;height:2px;background:var(--dark);border-radius:2px;transition:all 0.3s;}
+.hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+.hamburger.open span:nth-child(2){opacity:0;}
+.hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+.drawer-overlay{position:fixed;inset:0;z-index:400;background:rgba(44,30,16,0.4);opacity:0;pointer-events:none;transition:opacity 0.3s;}
+.drawer-overlay.open{opacity:1;pointer-events:all;}
+.drawer{position:fixed;top:0;left:0;bottom:0;width:280px;z-index:500;background:var(--white);transform:translateX(-100%);transition:transform 0.3s cubic-bezier(0.4,0,0.2,1);}
+.drawer.open{transform:translateX(0);}
+.drawer-header{padding:24px 20px 20px;border-bottom:0.5px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.drawer-logo{font-family:'Playfair Display',serif;font-size:20px;color:var(--dark);}
+.drawer-logo span{font-style:italic;color:var(--amber);}
+.drawer-close{width:32px;height:32px;border-radius:50%;border:0.5px solid var(--border);background:transparent;cursor:pointer;font-size:16px;color:var(--muted);display:flex;align-items:center;justify-content:center;}
+.drawer-nav{padding:12px 0;}
+.drawer-item{display:flex;align-items:center;gap:14px;padding:14px 20px;cursor:pointer;transition:background 0.15s;border:none;background:transparent;width:100%;text-align:left;}
+.drawer-item:hover{background:var(--cream);}
+.drawer-item-icon{width:38px;height:38px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
+.drawer-item-text{font-size:15px;font-weight:500;color:var(--dark);}
+.drawer-footer{position:absolute;bottom:0;left:0;right:0;padding:20px;border-top:0.5px solid var(--border);}
+.drawer-logout{width:100%;padding:11px;border:0.5px solid var(--border);border-radius:100px;background:transparent;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--muted);cursor:pointer;}
+/* SEARCH OVERLAY */
+.search-overlay{position:fixed;inset:0;z-index:600;background:rgba(44,30,16,0.5);display:none;align-items:flex-start;justify-content:center;padding-top:80px;}
+.search-overlay.open{display:flex;}
+.search-box-modal{background:var(--white);border-radius:20px;width:calc(100% - 40px);max-width:520px;padding:20px;box-shadow:0 20px 60px rgba(44,30,16,0.2);}
+.search-field{display:flex;gap:10px;margin-bottom:12px;}
+.search-field input{flex:1;padding:12px 16px;border:0.5px solid var(--border);border-radius:100px;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--dark);outline:none;background:var(--cream);}
+.search-field input:focus{border-color:var(--amber);}
+.search-cancel{padding:10px 16px;border:none;background:transparent;font-size:14px;color:var(--muted);cursor:pointer;}
+.search-results{max-height:300px;overflow-y:auto;}
+/* NOTIF PANEL */
+.notif-panel{position:fixed;top:60px;right:12px;z-index:500;background:var(--white);border:0.5px solid var(--border);border-radius:16px;width:300px;box-shadow:0 8px 32px rgba(44,30,16,0.12);display:none;}
+.notif-panel.open{display:block;}
+.notif-header{padding:14px 16px;border-bottom:0.5px solid var(--border);display:flex;justify-content:space-between;align-items:center;font-size:14px;font-weight:500;}
+.notif-item{padding:12px 16px;border-bottom:0.5px solid var(--border);font-size:13px;}
+.notif-item:last-child{border-bottom:none;}
+.notif-item-title{font-weight:500;color:var(--dark);margin-bottom:2px;}
+.notif-item-sub{color:var(--muted);font-size:12px;}
+.notif-empty{padding:24px;text-align:center;font-size:13px;color:var(--muted);}
+/* SHARE MODAL */
+.modal-overlay{position:fixed;inset:0;z-index:700;background:rgba(44,30,16,0.5);display:none;align-items:center;justify-content:center;padding:20px;}
+.modal-overlay.open{display:flex;}
+.modal-box{background:var(--white);border-radius:20px;width:100%;max-width:400px;padding:28px;}
+.modal-title{font-family:'Playfair Display',serif;font-size:20px;margin-bottom:16px;}
+.modal-title em{font-style:italic;color:var(--amber);}
+.share-link{background:var(--cream);border:0.5px solid var(--border);border-radius:10px;padding:12px 14px;font-size:13px;color:var(--muted);word-break:break-all;margin-bottom:16px;font-family:monospace;}
+.modal-close-btn{position:absolute;top:16px;right:16px;width:30px;height:30px;border-radius:50%;border:0.5px solid var(--border);background:transparent;cursor:pointer;font-size:14px;color:var(--muted);display:flex;align-items:center;justify-content:center;}
+/* PAGE */
+.page{padding:72px 20px 90px;max-width:680px;margin:0 auto;}
+.screen{display:none;}
+.screen.active{display:block;animation:fadeUp 0.2s ease;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+.page-title{font-family:'Playfair Display',serif;font-size:26px;font-weight:400;color:var(--dark);margin-bottom:20px;margin-top:12px;}
+.page-title em{font-style:italic;color:var(--amber);}
+.card{background:var(--white);border:0.5px solid var(--border);border-radius:16px;padding:20px;margin-bottom:14px;}
+.slider-row{margin-bottom:16px;}
+.slider-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
+.slider-name{font-size:14px;font-weight:500;}
+.slider-val{font-size:12px;font-weight:500;padding:2px 10px;border-radius:100px;}
+.slider-ends{display:flex;justify-content:space-between;margin-top:3px;font-size:11px;color:var(--muted);}
+input[type=range]{width:100%;}
+.metrics{display:flex;gap:10px;margin:14px 0 0;}
+.metric{flex:1;background:var(--cream);border-radius:10px;padding:10px 12px;}
+.metric-label{font-size:11px;color:var(--muted);margin-bottom:2px;}
+.metric-val{font-size:18px;font-weight:500;}
+.btn{width:100%;padding:13px;border:none;border-radius:100px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;cursor:pointer;transition:all 0.2s;display:block;text-align:center;}
+.btn-dark{background:var(--dark);color:var(--white);}
+.btn-dark:hover{background:var(--mid);}
+.btn-outline{background:transparent;color:var(--dark);border:0.5px solid var(--border);}
+.btn-outline:hover{background:var(--cream);}
+.btn-green{background:var(--green);color:var(--white);}
+.btn-green:hover{background:#2d4832;}
+.btn-amber{background:var(--amber);color:var(--white);}
+.btn-sm{width:auto;padding:9px 16px;font-size:13px;display:inline-block;}
+.list-item{display:flex;align-items:center;gap:14px;padding:14px 0;border-bottom:0.5px solid var(--border);cursor:pointer;}
+.list-item:last-child{border-bottom:none;}
+.list-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
+.list-info{flex:1;}
+.list-name{font-size:14px;font-weight:500;color:var(--dark);}
+.list-meta{font-size:12px;color:var(--muted);margin-top:2px;}
+.list-star{font-size:18px;cursor:pointer;padding:4px;}
+.empty{text-align:center;padding:32px 20px;color:var(--muted);font-size:14px;line-height:1.7;}
+.back-btn{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--muted);border:none;background:transparent;cursor:pointer;padding:0;margin-bottom:4px;}
+.step-card{background:var(--white);border:0.5px solid var(--border);border-radius:16px;padding:18px 20px;margin-bottom:10px;display:flex;gap:14px;align-items:flex-start;cursor:pointer;}
+.step-card.done{opacity:0.5;background:var(--cream);}
+.step-card.active-step{border-color:var(--amber);background:rgba(212,133,74,0.04);}
+.step-num{width:32px;height:32px;border-radius:50%;border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;color:var(--muted);flex-shrink:0;}
+.step-card.done .step-num{background:var(--green);border-color:var(--green);color:var(--white);}
+.step-card.active-step .step-num{background:var(--amber);border-color:var(--amber);color:var(--white);}
+.step-content{flex:1;}
+.step-title{font-size:14px;font-weight:500;color:var(--dark);margin-bottom:4px;}
+.step-desc{font-size:13px;color:var(--muted);line-height:1.6;}
+.step-time{font-size:11px;color:var(--amber);font-weight:500;margin-top:4px;}
+.step-check{width:24px;height:24px;border-radius:6px;border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.step-card.done .step-check{background:var(--green);border-color:var(--green);}
+.progress-wrap{background:var(--cream);border-radius:100px;height:8px;overflow:hidden;}
+.progress-bar{height:100%;background:var(--amber);border-radius:100px;transition:width 0.4s;}
+.notif-banner{background:rgba(212,133,74,0.12);border:0.5px solid rgba(212,133,74,0.3);border-radius:12px;padding:12px 16px;display:flex;align-items:center;gap:10px;margin-bottom:14px;font-size:13px;color:var(--mid);}
+.camera-box{background:var(--dark);border-radius:20px;aspect-ratio:4/3;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;margin-bottom:16px;cursor:pointer;}
+.shop-search-box{display:flex;gap:10px;margin-bottom:16px;}
+.shop-search-input{flex:1;padding:12px 16px;border:0.5px solid var(--border);border-radius:100px;background:var(--white);font-family:'DM Sans',sans-serif;font-size:14px;color:var(--dark);outline:none;}
+.shop-search-input:focus{border-color:var(--amber);}
+.shop-search-btn{padding:12px 20px;background:var(--dark);color:var(--white);border:none;border-radius:100px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;}
+.shopping-item{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:0.5px solid var(--border);}
+.shopping-item:last-child{border-bottom:none;}
+.shop-check{width:22px;height:22px;border-radius:6px;border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:all 0.15s;}
+.shop-check.checked{background:var(--green);border-color:var(--green);}
+.shop-name{flex:1;font-size:14px;color:var(--dark);}
+.shop-price{font-size:13px;font-weight:500;color:var(--amber);}
+.shop-remove{font-size:18px;color:var(--muted);cursor:pointer;padding:0 4px;}
+.total-box{background:var(--dark);border-radius:16px;padding:18px 20px;display:flex;justify-content:space-between;align-items:center;margin-top:16px;}
+.total-label{font-size:14px;color:rgba(253,250,245,0.6);}
+.total-val{font-size:22px;font-weight:500;color:var(--white);}
+.settings-item{display:flex;justify-content:space-between;align-items:center;padding:15px 0;border-bottom:0.5px solid var(--border);font-size:14px;cursor:pointer;}
+.settings-item:last-child{border-bottom:none;}
+.settings-item.danger{color:var(--red);}
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;z-index:200;background:var(--white);border-top:0.5px solid var(--border);display:flex;padding:8px 0 20px;}
+.bnav-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:6px 4px;border:none;background:transparent;cursor:pointer;}
+.bnav-icon{width:32px;height:32px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;}
+.bnav-btn.active .bnav-icon{background:rgba(212,133,74,0.15);}
+.bnav-label{font-size:10px;color:var(--muted);}
+.bnav-btn.active .bnav-label{color:var(--amber);font-weight:500;}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <button class="hamburger" id="hamburger" onclick="toggleDrawer()"><span></span><span></span><span></span></button>
+  <div class="topbar-logo">Le<span>vain</span></div>
+  <div class="topbar-right">
+    <button class="topbar-btn" onclick="openSearch()" title="Søg i opskrifter">🔍</button>
+    <button class="topbar-btn" id="notif-btn" onclick="toggleNotifPanel()" title="Notifikationer">
+      🔔<div class="notif-dot" id="notif-dot"></div>
+    </button>
+    <div class="avatar" onclick="showScreen('profil')">N</div>
+  </div>
+</div>
+
+<!-- NOTIF PANEL -->
+<div class="notif-panel" id="notif-panel">
+  <div class="notif-header">
+    Notifikationer
+    <button onclick="clearNotifs()" style="font-size:11px;color:var(--muted);border:none;background:transparent;cursor:pointer;">Ryd alle</button>
+  </div>
+  <div id="notif-list"><div class="notif-empty">Ingen notifikationer endnu</div></div>
+</div>
+
+<!-- SEARCH OVERLAY -->
+<div class="search-overlay" id="search-overlay" onclick="closeSearch(event)">
+  <div class="search-box-modal">
+    <div class="search-field">
+      <input type="text" id="search-input" placeholder="Søg i opskrifter..." oninput="runSearch()" autofocus>
+      <button class="search-cancel" onclick="closeSearchModal()">Annuller</button>
+    </div>
+    <div class="search-results" id="search-results">
+      <div style="font-size:13px;color:var(--muted);text-align:center;padding:20px;">Skriv for at søge</div>
+    </div>
+  </div>
+</div>
+
+<!-- SHARE MODAL -->
+<div class="modal-overlay" id="share-modal" onclick="closeShareModal(event)" style="position:fixed;">
+  <div class="modal-box" style="position:relative;">
+    <button class="modal-close-btn" onclick="closeShareModal()">✕</button>
+    <div class="modal-title">Del <em>opskrift</em></div>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:16px;">Send dette link til en ven — de kan åbne opskriften direkte i Levain.</p>
+    <div class="share-link" id="share-link-text">levain.app/recipe/abc123</div>
+    <button class="btn btn-dark" onclick="copyShareLink()" style="margin-bottom:10px;">📋 Kopiér link</button>
+    <button class="btn btn-outline" onclick="closeShareModal()">Luk</button>
+  </div>
+</div>
+
+<!-- DRAWER -->
+<div class="drawer-overlay" id="drawer-overlay" onclick="closeDrawer()"></div>
+<div class="drawer" id="drawer">
+  <div class="drawer-header">
+    <div class="drawer-logo">Le<span>vain</span></div>
+    <button class="drawer-close" onclick="closeDrawer()">✕</button>
+  </div>
+  <div class="drawer-nav">
+    <button class="drawer-item" onclick="drawerGo('opskrifter')"><div class="drawer-item-icon" style="background:rgba(212,133,74,0.1);">📖</div><span class="drawer-item-text">Opskrifter</span></button>
+    <button class="drawer-item" onclick="drawerGo('kamera')"><div class="drawer-item-icon" style="background:rgba(58,90,64,0.1);">📷</div><span class="drawer-item-text">Kamera</span></button>
+    <button class="drawer-item" onclick="drawerGo('indkob')"><div class="drawer-item-icon" style="background:rgba(107,66,38,0.1);">🛒</div><span class="drawer-item-text">Indkøbsliste</span></button>
+    <button class="drawer-item" onclick="drawerGo('favoriter')"><div class="drawer-item-icon" style="background:rgba(212,133,74,0.08);">⭐</div><span class="drawer-item-text">Favoriter</span></button>
+    <button class="drawer-item" onclick="closeDrawer();openSearch()"><div class="drawer-item-icon" style="background:rgba(44,30,16,0.06);">🔍</div><span class="drawer-item-text">Søg i opskrifter</span></button>
+  </div>
+  <div class="drawer-footer"><button class="drawer-logout" onclick="if(confirm('Log ud?'))window.location='index.html'">Log ud</button></div>
+</div>
+
+<div class="page">
+
+  <div class="screen active" id="screen-hjem">
+    <p style="font-size:13px;color:var(--muted);margin-top:12px;">Godmorgen 👋</p>
+    <h1 class="page-title">Hvad bager vi <em>i dag?</em></h1>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+      <div style="font-size:16px;font-weight:500;">Seneste opskrifter</div>
+      <a href="#" onclick="event.preventDefault();showScreen('opskrifter')" style="font-size:12px;color:var(--muted);text-decoration:none;">Se alle →</a>
+    </div>
+    <div class="card" style="padding:0 20px;" id="home-breads"></div>
+    <div style="margin-top:16px;"><button class="btn btn-dark" onclick="showScreen('ny-opskrift')">+ Lav ny opskrift</button></div>
+  </div>
+
+  <div class="screen" id="screen-opskrifter">
+    <h1 class="page-title"><em>Opskrifter</em></h1>
+    <button class="btn btn-dark" style="margin-bottom:20px;" onclick="showScreen('ny-opskrift')">+ Opret ny opskrift</button>
+    <div style="font-size:16px;font-weight:500;margin-bottom:12px;">Gemte opskrifter</div>
+    <div class="card" style="padding:0 20px;" id="all-breads"></div>
+    <div style="font-size:16px;font-weight:500;margin:20px 0 12px;">Favoritter ⭐</div>
+    <div class="card" style="padding:0 20px;" id="fav-breads"></div>
+  </div>
+
+  <div class="screen" id="screen-ny-opskrift">
+    <button class="back-btn" onclick="showScreen('opskrifter')">← Tilbage</button>
+    <h1 class="page-title">Ny <em>opskrift</em></h1>
+    <div class="card">
+      <div style="font-size:14px;font-weight:500;margin-bottom:8px;">Navn på opskrift</div>
+      <input id="recipe-name-input" type="text" placeholder="fx Mit surdejsbrød" style="width:100%;padding:11px 14px;border:0.5px solid var(--border);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--dark);background:var(--cream);outline:none;">
+    </div>
+    <div class="card">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+        <div style="font-size:14px;font-weight:500;">Brød balance</div>
+        <div id="balance-badge" style="font-size:11px;font-weight:500;padding:3px 10px;border-radius:100px;background:rgba(58,90,64,0.1);color:var(--green);">God balance ✓</div>
+      </div>
+      <div style="display:flex;gap:8px;align-items:flex-end;height:80px;margin-bottom:10px;">
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;">
+          <div style="font-size:11px;font-weight:500;color:#D4854A;" id="pct-acid">40%</div>
+          <div style="width:100%;background:var(--cream);border-radius:5px 5px 3px 3px;overflow:hidden;height:60px;display:flex;align-items:flex-end;">
+            <div id="bar-acid" style="width:100%;background:#D4854A;border-radius:3px;transition:height 0.2s;height:40%;"></div>
+          </div>
+          <span style="font-size:10px;color:var(--muted);">Surhed</span>
+        </div>
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;">
+          <div style="font-size:11px;font-weight:500;color:#3A5A40;" id="pct-crust">55%</div>
+          <div style="width:100%;background:var(--cream);border-radius:5px 5px 3px 3px;overflow:hidden;height:60px;display:flex;align-items:flex-end;">
+            <div id="bar-crust" style="width:100%;background:#3A5A40;border-radius:3px;transition:height 0.2s;height:55%;"></div>
+          </div>
+          <span style="font-size:10px;color:var(--muted);">Sprødhed</span>
+        </div>
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;">
+          <div style="font-size:11px;font-weight:500;color:#378ADD;" id="pct-air">60%</div>
+          <div style="width:100%;background:var(--cream);border-radius:5px 5px 3px 3px;overflow:hidden;height:60px;display:flex;align-items:flex-end;">
+            <div id="bar-air" style="width:100%;background:#378ADD;border-radius:3px;transition:height 0.2s;height:60%;"></div>
+          </div>
+          <span style="font-size:10px;color:var(--muted);">Luftighed</span>
+        </div>
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;">
+          <div style="font-size:11px;font-weight:500;color:var(--muted);" id="pct-time">50%</div>
+          <div style="width:100%;background:var(--cream);border-radius:5px 5px 3px 3px;overflow:hidden;height:60px;display:flex;align-items:flex-end;">
+            <div id="bar-time" style="width:100%;background:var(--dark);border-radius:3px;transition:height 0.2s;height:50%;"></div>
+          </div>
+          <span style="font-size:10px;color:var(--muted);">Tid</span>
+        </div>
+      </div>
+      <div id="balance-msg" style="font-size:12px;text-align:center;color:var(--muted);min-height:16px;"></div>
+    </div>
+    <div class="card">
+      <div style="font-size:14px;font-weight:500;margin-bottom:16px;">Justér dit brød</div>
+      <div class="slider-row">
+        <div class="slider-top"><span class="slider-name">Surhed</span><span class="slider-val" id="lbl-acid" style="background:rgba(212,133,74,0.12);color:#D4854A;">Let syrlig</span></div>
+        <input type="range" min="0" max="100" value="40" id="n-acid" oninput="updateNew(this)">
+        <div class="slider-ends"><span>Mild</span><span>Meget syrlig</span></div>
+      </div>
+      <div class="slider-row">
+        <div class="slider-top"><span class="slider-name">Sprødhed</span><span class="slider-val" id="lbl-crust" style="background:rgba(58,90,64,0.1);color:#3A5A40;">Sprød</span></div>
+        <input type="range" min="0" max="100" value="55" id="n-crust" oninput="updateNew(this)">
+        <div class="slider-ends"><span>Blød</span><span>Glasagtig</span></div>
+      </div>
+      <div class="slider-row">
+        <div class="slider-top"><span class="slider-name">Luftighed</span><span class="slider-val" id="lbl-air" style="background:rgba(55,138,221,0.1);color:#378ADD;">Luftig</span></div>
+        <input type="range" min="0" max="100" value="60" id="n-air" oninput="updateNew(this)">
+        <div class="slider-ends"><span>Tæt</span><span>Open crumb</span></div>
+      </div>
+      <div class="slider-row" style="margin-bottom:0;">
+        <div class="slider-top"><span class="slider-name">Tid</span><span class="slider-val" id="lbl-time" style="background:rgba(44,30,16,0.06);color:var(--muted);">16 timer</span></div>
+        <input type="range" min="4" max="48" step="2" value="16" id="n-time" oninput="updateNew(this)">
+        <div class="slider-ends"><span>4 timer</span><span>48 timer</span></div>
+      </div>
+      <div class="metrics">
+        <div class="metric"><div class="metric-label">Hydrering</div><div class="metric-val" id="n-hyd">78%</div></div>
+        <div class="metric"><div class="metric-label">Surdej</div><div class="metric-val" id="n-start">17%</div></div>
+        <div class="metric"><div class="metric-label">Ovn</div><div class="metric-val" id="n-temp">246°C</div></div>
+      </div>
+    </div>
+    <div style="display:flex;gap:10px;margin-top:4px;">
+      <button class="btn btn-outline" onclick="saveRecipe()">💾 Gem opskrift</button>
+      <button class="btn btn-green" onclick="saveAndStartBaking()">🍞 Begynd bagning</button>
+    </div>
+    <button class="btn btn-outline" style="margin-top:10px;color:var(--red);border-color:rgba(163,45,45,0.2);" onclick="resetRecipe()">↩ Nulstil</button>
+  </div>
+
+  <div class="screen" id="screen-bagning">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
+      <button class="back-btn" onclick="showScreen('opskrifter')">← Mine opskrifter</button>
+      <button onclick="undoStep()" style="font-size:12px;color:var(--muted);border:0.5px solid var(--border);border-radius:100px;padding:6px 14px;background:transparent;cursor:pointer;">↩ Fortryd</button>
+    </div>
+    <h1 class="page-title"><em>Bagning</em> i gang</h1>
+    <div id="baking-notif-banner" class="notif-banner" style="display:none;">🔔 Notifikationer er aktive — du får besked ved hvert trin</div>
+    <div class="card" style="padding:16px 20px;">
+      <div style="font-size:13px;color:var(--muted);margin-bottom:6px;" id="baking-recipe-name">Mit surdejsbrød</div>
+      <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-bottom:8px;">
+        <span id="progress-label">0 af 0 trin</span><span id="progress-pct">0%</span>
+      </div>
+      <div class="progress-wrap"><div class="progress-bar" id="progress-bar" style="width:0%;"></div></div>
+    </div>
+    <div id="baking-steps"></div>
+    <div id="baking-done" style="display:none;">
+      <div class="card" style="text-align:center;padding:32px;">
+        <div style="font-size:52px;margin-bottom:12px;">🎉</div>
+        <div style="font-family:'Playfair Display',serif;font-size:22px;margin-bottom:8px;">Brødet er <em style="font-style:italic;color:var(--amber);">færdigt!</em></div>
+        <p style="font-size:14px;color:var(--muted);margin-bottom:20px;">Lad det køle i mindst 1 time inden du skærer i det.</p>
+        <button class="btn btn-dark" onclick="showScreen('kamera')">📷 Scan dit brød</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="screen" id="screen-kamera">
+    <h1 class="page-title">Scan dit <em>brød</em></h1>
+    <div class="camera-box" onclick="runScan('default')">
+      <div style="font-size:52px;">📷</div>
+      <div style="font-size:14px;color:rgba(253,250,245,0.6);">Tryk for at scanne dit brød</div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:16px;">
+      <button class="btn btn-outline" style="padding:10px;font-size:12px;" onclick="runScan('skive')">🔪 Skive</button>
+      <button class="btn btn-outline" style="padding:10px;font-size:12px;" onclick="runScan('struktur')">🔬 Struktur</button>
+      <button class="btn btn-outline" style="padding:10px;font-size:12px;" onclick="runScan('overflade')">🍞 Overflade</button>
+    </div>
+    <div id="scan-result" style="display:none;">
+      <div class="card">
+        <div style="display:flex;align-items:center;gap:16px;margin-bottom:16px;">
+          <div style="width:64px;height:64px;border-radius:50%;background:rgba(212,133,74,0.15);display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:500;color:var(--amber);flex-shrink:0;" id="scan-score">8.2</div>
+          <div><div style="font-size:16px;font-weight:500;margin-bottom:4px;" id="scan-title">Flot bagt brød!</div><div style="font-size:13px;color:var(--muted);" id="scan-sub">Her er hvad du kan forbedre</div></div>
+        </div>
+        <div id="scan-tips"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="screen" id="screen-indkob">
+    <h1 class="page-title"><em>Indkøbs</em>liste</h1>
+    <div class="card">
+      <div style="font-size:13px;color:var(--muted);margin-bottom:12px;">Tilføj en vare og se estimeret pris</div>
+      <div class="shop-search-box">
+        <input class="shop-search-input" type="text" id="shop-input" placeholder="fx mel, æg, smør..." onkeydown="if(event.key==='Enter')addShopItem()">
+        <button class="shop-search-btn" onclick="addShopItem()">Tilføj</button>
+      </div>
+      <div id="shop-list"></div>
+      <div class="total-box" id="shop-total" style="display:none;">
+        <span class="total-label">Estimeret total</span><span class="total-val" id="total-price">0 kr</span>
+      </div>
+    </div>
+    <div class="card">
+      <div style="font-size:13px;font-weight:500;margin-bottom:10px;">Fra din seneste opskrift</div>
+      <div id="recipe-ings"></div>
+      <button class="btn btn-outline" style="margin-top:12px;font-size:13px;" onclick="addRecipeIngs()">Tilføj alle til listen</button>
+    </div>
+  </div>
+
+  <div class="screen" id="screen-favoriter">
+    <h1 class="page-title">Dine <em>favoritter</em></h1>
+    <div class="card" style="padding:0 20px;" id="fav-full"></div>
+  </div>
+
+  <div class="screen" id="screen-surdej">
+    <h1 class="page-title">Er surdejen <em>klar?</em></h1>
+    <div class="card" style="text-align:center;padding:40px 24px;">
+      <div style="font-size:56px;margin-bottom:16px;">🫙</div>
+      <p style="font-size:14px;color:var(--muted);line-height:1.7;margin:0 auto 24px;max-width:300px;">Tag et billede af din surdej — AI'en analyserer om den er klar.</p>
+      <button class="btn btn-dark" style="max-width:280px;margin:0 auto;" onclick="alert('Kamera virker i React Native appen.')">Tag billede af surdej</button>
+    </div>
+  </div>
+
+  <div class="screen" id="screen-profil">
+    <h1 class="page-title">Min <em>profil</em></h1>
+    <div class="card">
+      <div style="display:flex;align-items:center;gap:16px;margin-bottom:20px;">
+        <div style="width:64px;height:64px;border-radius:50%;background:var(--amber);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:26px;font-style:italic;color:var(--white);">N</div>
+        <div><div style="font-size:18px;font-weight:500;">Nole</div><div style="font-size:13px;color:var(--muted);margin-top:2px;">nole@levain.dk</div></div>
+      </div>
+      <button class="btn btn-outline">Rediger profil</button>
+    </div>
+    <div class="card" style="padding:0 20px;">
+      <div class="settings-item">Notifikationer <span style="color:var(--muted);">→</span></div>
+      <div class="settings-item">Skift adgangskode <span style="color:var(--muted);">→</span></div>
+      <div class="settings-item danger" onclick="if(confirm('Log ud?'))window.location='index.html'">Log ud →</div>
+    </div>
+  </div>
+
+</div>
+
+<nav class="bottom-nav">
+  <button class="bnav-btn active" id="btn-hjem" onclick="showScreen('hjem')"><div class="bnav-icon">🏠</div><span class="bnav-label">Hjem</span></button>
+  <button class="bnav-btn" id="btn-opskrifter" onclick="showScreen('opskrifter')"><div class="bnav-icon">📖</div><span class="bnav-label">Opskrifter</span></button>
+  <button class="bnav-btn" id="btn-kamera" onclick="showScreen('kamera')"><div class="bnav-icon">📷</div><span class="bnav-label">Kamera</span></button>
+  <button class="bnav-btn" id="btn-indkob" onclick="showScreen('indkob')"><div class="bnav-icon">🛒</div><span class="bnav-label">Indkøb</span></button>
+  <button class="bnav-btn" id="btn-surdej" onclick="showScreen('surdej')"><div class="bnav-icon">🫙</div><span class="bnav-label">Surdej</span></button>
+</nav>
+
+<script>
+var SCREENS = ['hjem','opskrifter','ny-opskrift','bagning','kamera','indkob','favoriter','surdej','profil'];
+var aL = ['Mild','Let syrlig','Syrlig','Meget syrlig'];
+var cL = ['Blød','Let sprød','Sprød','Glasagtig'];
+var rL = ['Tæt','Let luftig','Luftig','Open crumb'];
+var LIMIT = 55;
+var selectedTime = 'weekend';
+var bakingSteps = [];
+var completedSteps = [];
+var shopItems = [];
+var notifications = [];
+var currentBakingName = '';
+
+function lbl(v,a){ return v<25?a[0]:v<50?a[1]:v<75?a[2]:a[3]; }
+
+// ── NAVIGATION ────────────────────────────────────────────────
+function showScreen(name) {
+  SCREENS.forEach(function(s) {
+    var p = document.getElementById('screen-'+s);
+    var b = document.getElementById('btn-'+s);
+    if(p) p.classList.remove('active');
+    if(b) b.classList.remove('active');
+  });
+  var el = document.getElementById('screen-'+name);
+  var bn = document.getElementById('btn-'+name);
+  if(el) el.classList.add('active');
+  if(bn) bn.classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+  if(name==='opskrifter'||name==='favoriter') renderRecipes();
+  if(name==='hjem') renderAll();
+  if(name==='indkob') { renderShop(); renderRecipeIngs(); }
+  closeNotifPanel();
+}
+
+function toggleDrawer() {
+  document.getElementById('drawer').classList.toggle('open');
+  document.getElementById('drawer-overlay').classList.toggle('open');
+  document.getElementById('hamburger').classList.toggle('open');
+}
+function closeDrawer() {
+  document.getElementById('drawer').classList.remove('open');
+  document.getElementById('drawer-overlay').classList.remove('open');
+  document.getElementById('hamburger').classList.remove('open');
+}
+function drawerGo(s) { closeDrawer(); showScreen(s); }
+
+// ── SØGNING ───────────────────────────────────────────────────
+function openSearch() {
+  document.getElementById('search-overlay').classList.add('open');
+  setTimeout(function(){ document.getElementById('search-input').focus(); }, 100);
+}
+function closeSearchModal() {
+  document.getElementById('search-overlay').classList.remove('open');
+  document.getElementById('search-input').value = '';
+  document.getElementById('search-results').innerHTML = '<div style="font-size:13px;color:var(--muted);text-align:center;padding:20px;">Skriv for at søge</div>';
+}
+function closeSearch(e) { if(e.target.id==='search-overlay') closeSearchModal(); }
+
+function runSearch() {
+  var q = document.getElementById('search-input').value.toLowerCase().trim();
+  var res = document.getElementById('search-results');
+  if(!q) { res.innerHTML = '<div style="font-size:13px;color:var(--muted);text-align:center;padding:20px;">Skriv for at søge</div>'; return; }
+  var list = getSaved();
+  var found = list.filter(function(b){ return b.name.toLowerCase().includes(q); });
+  if(found.length===0) { res.innerHTML = '<div style="font-size:13px;color:var(--muted);text-align:center;padding:20px;">Ingen opskrifter matcher "'+q+'"</div>'; return; }
+  res.innerHTML = found.map(function(b) {
+    return '<div style="display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:0.5px solid var(--border);cursor:pointer;" onclick="closeSearchModal();showScreen(\'opskrifter\')">'
+      +'<div style="width:40px;height:40px;border-radius:10px;background:hsl('+(25+(b.ai||50)*0.3)+',40%,60%);display:flex;align-items:center;justify-content:center;font-size:18px;">🍞</div>'
+      +'<div><div style="font-size:14px;font-weight:500;color:var(--dark);">'+b.name+'</div>'
+      +'<div style="font-size:12px;color:var(--muted);">'+lbl(b.ac||50,aL)+' · '+lbl(b.cr||50,cL)+' · '+b.date+'</div></div>'
+      +'</div>';
+  }).join('');
+}
+
+// ── NOTIFIKATIONER ────────────────────────────────────────────
+function toggleNotifPanel() {
+  document.getElementById('notif-panel').classList.toggle('open');
+}
+function closeNotifPanel() {
+  document.getElementById('notif-panel').classList.remove('open');
+}
+function addNotif(title, sub) {
+  notifications.unshift({title:title, sub:sub, time: new Date().toLocaleTimeString('da-DK',{hour:'2-digit',minute:'2-digit'})});
+  renderNotifs();
+  document.getElementById('notif-dot').classList.add('active');
+}
+function clearNotifs() {
+  notifications = [];
+  renderNotifs();
+  document.getElementById('notif-dot').classList.remove('active');
+}
+function renderNotifs() {
+  var list = document.getElementById('notif-list');
+  if(notifications.length===0) { list.innerHTML = '<div class="notif-empty">Ingen notifikationer endnu</div>'; return; }
+  list.innerHTML = notifications.slice(0,8).map(function(n) {
+    return '<div class="notif-item"><div class="notif-item-title">'+n.title+'</div><div class="notif-item-sub">'+n.sub+' · '+n.time+'</div></div>';
+  }).join('');
+}
+
+// ── DEL OPSKRIFT ──────────────────────────────────────────────
+function shareRecipe(id) {
+  var list = getSaved();
+  var b = list.find(function(x){return x.id===id;});
+  if(!b) return;
+  var code = btoa(JSON.stringify({name:b.name,ac:b.ac,cr:b.cr,ai:b.ai,hyd:b.hyd}));
+  var link = 'levain.app/recipe/'+code.slice(0,16);
+  document.getElementById('share-link-text').textContent = link;
+  document.getElementById('share-modal').classList.add('open');
+}
+function closeShareModal(e) {
+  if(!e || e.target.id==='share-modal') document.getElementById('share-modal').classList.remove('open');
+}
+function copyShareLink() {
+  var txt = document.getElementById('share-link-text').textContent;
+  navigator.clipboard.writeText(txt).then(function(){ alert('Link kopieret! ✓'); }).catch(function(){ alert('Kopiér dette link:\n'+txt); });
+}
+
+// ── SLIDERS + BAROMETER ───────────────────────────────────────
+function updateNew(el) {
+  var acidEl  = document.getElementById('n-acid');
+  var crustEl = document.getElementById('n-crust');
+  var airEl   = document.getElementById('n-air');
+  var timeEl  = document.getElementById('n-time');
+  var ac = +acidEl.value, cr = +crustEl.value, ai = +airEl.value, tv = +timeEl.value;
+  var id = el ? el.id : '';
+  if(id !== 'n-time') {
+    var over = (ac>LIMIT?1:0)+(cr>LIMIT?1:0)+(ai>LIMIT?1:0);
+    if(over > 1) {
+      if(id==='n-acid'){ cr=Math.min(cr,LIMIT);crustEl.value=cr; ai=Math.min(ai,LIMIT);airEl.value=ai; }
+      else if(id==='n-crust'){ ac=Math.min(ac,LIMIT);acidEl.value=ac; ai=Math.min(ai,LIMIT);airEl.value=ai; }
+      else if(id==='n-air'){ ac=Math.min(ac,LIMIT);acidEl.value=ac; cr=Math.min(cr,LIMIT);crustEl.value=cr; }
+    }
+  }
+  var tLbl = document.getElementById('lbl-time');
+  if(tLbl) { tLbl.textContent = tv+' timer'; selectedTime = tv<=8?'quick':tv<=20?'evening':'weekend'; }
+  document.getElementById('lbl-acid').textContent  = lbl(ac,aL);
+  document.getElementById('lbl-crust').textContent = lbl(cr,cL);
+  document.getElementById('lbl-air').textContent   = lbl(ai,rL);
+  document.getElementById('n-hyd').textContent   = Math.min(88,65+Math.round(ai*0.22))+'%';
+  document.getElementById('n-start').textContent = Math.min(28,10+Math.round(ac*0.18))+'%';
+  document.getElementById('n-temp').textContent  = Math.min(260,230+Math.round(cr*0.25))+'°C';
+  var tp = Math.round((tv-4)/(48-4)*100);
+  function sb(bid,pid,val){ var b=document.getElementById(bid),p=document.getElementById(pid); if(b)b.style.height=Math.max(4,val)+'%'; if(p)p.textContent=Math.round(val)+'%'; }
+  sb('bar-acid','pct-acid',ac); sb('bar-crust','pct-crust',cr); sb('bar-air','pct-air',ai); sb('bar-time','pct-time',tp);
+  var badge=document.getElementById('balance-badge'), msg=document.getElementById('balance-msg');
+  var ov=(ac>LIMIT?1:0)+(cr>LIMIT?1:0)+(ai>LIMIT?1:0);
+  if(ov>1){ if(badge){badge.style.background='rgba(212,133,74,0.15)';badge.style.color='#854F0B';badge.textContent='⚠️ Konflikt';} if(msg){msg.style.color='#854F0B';msg.textContent='To på max — de andre er justeret ned automatisk';} }
+  else if(Math.abs(ac-cr)<12&&Math.abs(cr-ai)<12){ if(badge){badge.style.background='rgba(58,90,64,0.1)';badge.style.color='var(--green)';badge.textContent='Perfekt balance ✓';} if(msg){msg.style.color='var(--green)';msg.textContent='Alle tre egenskaber er i harmoni';} }
+  else if(ac>70){ if(badge){badge.style.background='rgba(212,133,74,0.12)';badge.style.color='var(--amber)';badge.textContent='Syrlig profil';} if(msg){msg.style.color='var(--muted)';msg.textContent='Lang fermentering giver mest syre';} }
+  else if(cr>70){ if(badge){badge.style.background='rgba(58,90,64,0.1)';badge.style.color='#3A5A40';badge.textContent='Sprød profil';} if(msg){msg.style.color='var(--muted)';msg.textContent='Høj varme og lav hydrering giver bedst sprødhed';} }
+  else if(ai>70){ if(badge){badge.style.background='rgba(55,138,221,0.1)';badge.style.color='#378ADD';badge.textContent='Luftig profil';} if(msg){msg.style.color='var(--muted)';msg.textContent='Høj hydrering og mange fold giver open crumb';} }
+  else{ if(badge){badge.style.background='rgba(58,90,64,0.1)';badge.style.color='var(--green)';badge.textContent='God balance ✓';} if(msg){msg.style.color='var(--green)';msg.textContent='God balance';} }
+}
+
+function resetRecipe() {
+  if(!confirm('Nulstil opskriften?')) return;
+  document.getElementById('recipe-name-input').value='';
+  document.getElementById('n-acid').value=40; document.getElementById('n-crust').value=55;
+  document.getElementById('n-air').value=60; document.getElementById('n-time').value=16;
+  selectedTime='weekend'; updateNew(null);
+}
+
+// ── DATA ──────────────────────────────────────────────────────
+function getSaved(){ try{ return JSON.parse(localStorage.getItem('levain_breads'))||[]; }catch(e){ return []; } }
+function saveList(list){ localStorage.setItem('levain_breads',JSON.stringify(list)); }
+
+function saveRecipe() {
+  var name=document.getElementById('recipe-name-input').value.trim()||'Mit surdejsbrød';
+  var ac=+document.getElementById('n-acid').value, cr=+document.getElementById('n-crust').value, ai=+document.getElementById('n-air').value;
+  var list=getSaved();
+  list.unshift({id:Date.now(),name:name,ac:ac,cr:cr,ai:ai,hyd:Math.min(88,65+Math.round(ai*0.22)),fav:false,time:selectedTime,date:new Date().toLocaleDateString('da-DK')});
+  saveList(list);
+  addNotif('Opskrift gemt', '"'+name+'" er gemt i dine opskrifter');
+  alert('"'+name+'" er gemt!');
+  showScreen('opskrifter');
+}
+
+function saveAndStartBaking() {
+  var name=document.getElementById('recipe-name-input').value.trim()||'Mit surdejsbrød';
+  var ac=+document.getElementById('n-acid').value, cr=+document.getElementById('n-crust').value, ai=+document.getElementById('n-air').value;
+  var id=Date.now();
+  var list=getSaved();
+  list.unshift({id:id,name:name,ac:ac,cr:cr,ai:ai,hyd:Math.min(88,65+Math.round(ai*0.22)),fav:false,time:selectedTime,date:new Date().toLocaleDateString('da-DK')});
+  saveList(list);
+  startBaking(id,name,ac,cr,ai,selectedTime);
+}
+
+function startBakingFromList(id) {
+  var list=getSaved(); var b=list.find(function(x){return x.id===id;});
+  if(b) startBaking(b.id,b.name,b.ac,b.cr,b.ai,b.time||'weekend');
+}
+
+function saveFav(id) {
+  var list=getSaved(); var i=list.findIndex(function(x){return x.id===id;});
+  if(i>-1){ list[i].fav=!list[i].fav; saveList(list); renderRecipes(); renderAll(); }
+}
+
+// ── BAKING ────────────────────────────────────────────────────
+function buildSteps(ac,cr,ai,timeMode) {
+  var folds=ai>65?4:ai>35?3:2, coldH=timeMode==='quick'?0:Math.round(ac*0.14+6);
+  var ovenT=Math.min(260,230+Math.round(cr*0.25)), lidMin=cr>60?15:20, noLid=Math.max(10,35-lidMin);
+  var steps=[
+    {title:'Bland mel og vand',desc:'Bland mel og 90% af vandet. Rør til alt mel er opløst. Lad hvile 30 min (autolyse).',dur:30},
+    {title:'Tilsæt surdej og salt',desc:'Fold surdejen ind. Opløs saltet i resten af vandet og tilsæt. Fold til det er inkorporeret.',dur:15}
+  ];
+  for(var i=1;i<=folds;i++) steps.push({title:'Stretch & fold nr.'+i+' af '+folds,desc:'Stræk alle 4 sider ind mod midten. Dæk til og hvil 30 min.',dur:30});
+  steps.push({title:'Bulk fermentering',desc:'Hvil ved stuetemperatur til dejen er hævet 50–75% med synlige bobler.',dur:90});
+  steps.push({title:'Form brødet',desc:'Vend dejen ud. Fold hjørnerne ind og spænd overfladen. Bench rest 20 min, form endeligt.',dur:30});
+  if(timeMode!=='quick'&&coldH>0) steps.push({title:'Koldhævning — '+coldH+' timer',desc:'Dæk hævekurven og stil i køleskabet. Koldhævning udvikler smag.',dur:coldH*60});
+  else steps.push({title:'Efterhævning — 45 min',desc:'Dæk og lad hvile til dejen springer langsomt tilbage.',dur:45});
+  steps.push({title:'Forvarm ovn til '+ovenT+'°C',desc:'Sæt støbejernsgryde med låg i ovnen. Forvarm 45–60 min.',dur:50});
+  steps.push({title:'Bag med låg — '+lidMin+' min',desc:'Score brødet og bag med låg for damp.',dur:lidMin});
+  steps.push({title:'Bag uden låg — '+noLid+' min',desc:'Tag låget af og bag til skorpen er dybt gyldenbrun.',dur:noLid});
+  steps.push({title:'Afkøl på rist',desc:'VIGTIGT: Vent mindst 1 time inden du skærer. Krummen sætter sig stadig.',dur:60});
+  return steps;
+}
+
+function startBaking(id,name,ac,cr,ai,timeMode) {
+  bakingSteps=buildSteps(ac,cr,ai,timeMode);
+  completedSteps=new Array(bakingSteps.length).fill(false);
+  currentBakingName=name;
+  document.getElementById('baking-recipe-name').textContent=name;
+  var total=bakingSteps.reduce(function(s,st){return s+st.dur;},0);
+  if(total>120){ document.getElementById('baking-notif-banner').style.display='flex'; scheduleNotifs(bakingSteps,name); }
+  renderBakingSteps();
+  showScreen('bagning');
+  addNotif('Bagning startet', '"'+name+'" er i gang');
+}
+
+function completeStep(i) {
+  completedSteps[i]=!completedSteps[i];
+  if(completedSteps[i]){ for(var k=0;k<i;k++) completedSteps[k]=true; }
+  if(completedSteps[i]) addNotif('Trin fuldført ✓', bakingSteps[i].title);
+  renderBakingSteps();
+}
+
+function undoStep() {
+  var last=completedSteps.lastIndexOf(true);
+  if(last>-1){ completedSteps[last]=false; renderBakingSteps(); }
+}
+
+function renderBakingSteps() {
+  var container=document.getElementById('baking-steps'), done=document.getElementById('baking-done');
+  var total=bakingSteps.length, comp=completedSteps.filter(Boolean).length, first=completedSteps.indexOf(false);
+  document.getElementById('progress-label').textContent=comp+' af '+total+' trin';
+  document.getElementById('progress-pct').textContent=Math.round(comp/total*100)+'%';
+  document.getElementById('progress-bar').style.width=Math.round(comp/total*100)+'%';
+  if(comp===total){ container.innerHTML=''; done.style.display='block'; addNotif('🎉 Brødet er færdigt!', '"'+currentBakingName+'" — lad det køle 1 time'); return; }
+  done.style.display='none';
+  var cursor=new Date(); cursor.setMinutes(0,0,0);
+  var times=bakingSteps.map(function(s){ var t=new Date(cursor); cursor=new Date(cursor.getTime()+s.dur*60000); return (t.getHours()+'').padStart(2,'0')+':'+(t.getMinutes()+'').padStart(2,'0'); });
+  container.innerHTML=bakingSteps.map(function(s,i){
+    var isDone=completedSteps[i], isActive=i===first;
+    var dur=s.dur>=60?Math.floor(s.dur/60)+'t'+(s.dur%60?' '+s.dur%60+'min':''):s.dur+' min';
+    return '<div class="step-card'+(isDone?' done':'')+(isActive?' active-step':'')+'" onclick="completeStep('+i+')">'
+      +'<div class="step-num">'+(isDone?'✓':i+1)+'</div>'
+      +'<div class="step-content"><div class="step-title">'+s.title+'</div><div class="step-desc">'+s.desc+'</div><div class="step-time">'+times[i]+' · '+dur+'</div></div>'
+      +'<div class="step-check">'+(isDone?'<span style="color:white;font-size:13px;">✓</span>':'')+'</div>'
+      +'</div>';
+  }).join('');
+}
+
+async function scheduleNotifs(steps,name) {
+  if(!('Notification' in window)) return;
+  var perm=await Notification.requestPermission();
+  if(perm!=='granted') return;
+  var cursor=new Date();
+  steps.forEach(function(s){
+    var delay=cursor.getTime()-Date.now();
+    if(delay>0){ (function(t){ setTimeout(function(){ new Notification('Levain 🍞',{body:'Tid til: '+t}); addNotif('Tid til næste trin', t); },delay); })(s.title); }
+    cursor=new Date(cursor.getTime()+s.dur*60000);
+  });
+}
+
+// ── RENDER ────────────────────────────────────────────────────
+function breadHTML(b) {
+  return '<div class="list-item">'
+    +'<div class="list-icon" style="background:hsl('+(25+(b.ai||50)*0.3)+',40%,'+(55+(b.hyd||72)*0.06)+'%);">🍞</div>'
+    +'<div class="list-info"><div class="list-name">'+b.name+'</div><div class="list-meta">'+lbl(b.ac||50,aL)+' · '+lbl(b.cr||50,cL)+' · '+b.date+'</div></div>'
+    +'<span class="list-star" onclick="event.stopPropagation();saveFav('+b.id+')">'+(b.fav?'⭐':'☆')+'</span>'
+    +'<span style="color:var(--muted);font-size:16px;cursor:pointer;padding:4px;" onclick="event.stopPropagation();shareRecipe('+b.id+')" title="Del opskrift">🔗</span>'
+    +'<span style="color:var(--muted);font-size:16px;cursor:pointer;padding:4px;" onclick="startBakingFromList('+b.id+')" title="Start bagning">▶</span>'
+    +'</div>';
+}
+
+function renderAll() {
+  var list=getSaved(), hb=document.getElementById('home-breads');
+  if(hb) hb.innerHTML=list.length===0?'<div class="empty">Ingen opskrifter endnu.<br>Tryk "Lav ny opskrift" herunder!</div>':list.slice(0,3).map(breadHTML).join('');
+}
+
+function renderRecipes() {
+  var list=getSaved(), favs=list.filter(function(b){return b.fav;});
+  var ab=document.getElementById('all-breads'), fb=document.getElementById('fav-breads'), ff=document.getElementById('fav-full');
+  if(ab) ab.innerHTML=list.length===0?'<div class="empty">Ingen gemte opskrifter endnu.</div>':list.map(breadHTML).join('');
+  if(fb) fb.innerHTML=favs.length===0?'<div class="empty">Ingen favoritter — tryk ☆ på en opskrift.</div>':favs.map(breadHTML).join('');
+  if(ff) ff.innerHTML=favs.length===0?'<div class="empty">Ingen favoritter endnu.</div>':favs.map(breadHTML).join('');
+}
+
+// ── KAMERA ────────────────────────────────────────────────────
+var scanData={
+  default:{score:'8.2',title:'Flot bagt brød!',sub:'Her er hvad du kan forbedre',tips:[{col:'#D4854A',t:'Skorpen er lidt for tyk — 5 min ekstra med låg'},{col:'#3A5A40',t:'Hul-strukturen ser fin ud'},{col:'#D4854A',t:'Farven er lidt bleg — hæv ovnen med 10°C'}]},
+  skive:{score:'7.8',title:'God krumme',sub:'Analyse af skive',tips:[{col:'#3A5A40',t:'Hullerne er jævnt fordelt'},{col:'#D4854A',t:'Lidt kompakt — øg hydrering 3-5%'},{col:'#3A5A40',t:'Ingen råt kerne'}]},
+  struktur:{score:'9.1',title:'Fremragende!',sub:'Glutennetværket er stærkt',tips:[{col:'#3A5A40',t:'Glutennetværket er elastisk'},{col:'#3A5A40',t:'Fermentationen var optimal'},{col:'#D4854A',t:'Prøv 1 ekstra fold for mere volumen'}]},
+  overflade:{score:'8.5',title:'Flot overflade',sub:'Analyse af skorpe',tips:[{col:'#3A5A40',t:'Scoringen åbnede sig flot'},{col:'#D4854A',t:'Prøv uden låg 5 min ekstra'},{col:'#3A5A40',t:'Farven er jævn'}]}
+};
+function runScan(type) {
+  var d=scanData[type]||scanData.default;
+  document.getElementById('scan-score').textContent=d.score;
+  document.getElementById('scan-title').textContent=d.title;
+  document.getElementById('scan-sub').textContent=d.sub;
+  document.getElementById('scan-tips').innerHTML=d.tips.map(function(t){
+    return '<div style="display:flex;gap:10px;padding:10px 0;border-bottom:0.5px solid var(--border);font-size:13px;"><div style="width:8px;height:8px;border-radius:50%;background:'+t.col+';flex-shrink:0;margin-top:4px;"></div><div>'+t.t+'</div></div>';
+  }).join('');
+  document.getElementById('scan-result').style.display='block';
+}
+
+// ── INDKØB ────────────────────────────────────────────────────
+var priser={mel:15,hvedemel:18,rugmel:22,aeg:35,smor:28,maelk:12,sukker:14,salt:8,vand:0,surdej:0,olie:22,havsalt:24,honning:45};
+function addShopItem() {
+  var input=document.getElementById('shop-input'), val=input.value.trim().toLowerCase();
+  if(!val) return;
+  var price=priser[val]!==undefined?priser[val]:Math.floor(Math.random()*30+10);
+  shopItems.push({id:Date.now(),name:val,price:price,checked:false});
+  input.value=''; renderShop();
+}
+function toggleShop(id){ var i=shopItems.findIndex(function(x){return x.id===id;}); if(i>-1){shopItems[i].checked=!shopItems[i].checked;renderShop();} }
+function removeShop(id){ shopItems=shopItems.filter(function(x){return x.id!==id;}); renderShop(); }
+function renderShop() {
+  var list=document.getElementById('shop-list'), tbox=document.getElementById('shop-total');
+  if(!list) return;
+  if(shopItems.length===0){list.innerHTML='<div class="empty" style="padding:16px 0;">Ingen varer endnu</div>';tbox.style.display='none';return;}
+  list.innerHTML=shopItems.map(function(item){
+    return '<div class="shopping-item"><div class="shop-check'+(item.checked?' checked':'')+'" onclick="toggleShop('+item.id+')">'+(item.checked?'<span style="color:white;font-size:12px;">✓</span>':'')+'</div>'
+      +'<span class="shop-name" style="'+(item.checked?'text-decoration:line-through;color:var(--muted);':'')+'">'+item.name+'</span>'
+      +'<span class="shop-price">~'+item.price+' kr</span><span class="shop-remove" onclick="removeShop('+item.id+')">×</span></div>';
+  }).join('');
+  var total=shopItems.reduce(function(s,i){return s+i.price;},0);
+  document.getElementById('total-price').textContent=total+' kr';
+  tbox.style.display='flex';
+}
+function renderRecipeIngs() {
+  var el=document.getElementById('recipe-ings'); if(!el) return;
+  var ings=[{name:'Hvedemel',amount:'450 g',price:18},{name:'Vand',amount:'330 ml',price:0},{name:'Surdej',amount:'80 g',price:0},{name:'Havsalt',amount:'9 g',price:24}];
+  el.innerHTML=ings.map(function(i){
+    return '<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:0.5px solid var(--border);font-size:13px;"><span>'+i.name+' <span style="color:var(--muted);">'+i.amount+'</span></span><span style="color:var(--amber);">'+(i.price>0?'~'+i.price+' kr':'gratis')+'</span></div>';
+  }).join('');
+}
+function addRecipeIngs() {
+  [{name:'hvedemel',price:18},{name:'havsalt',price:24}].forEach(function(i){
+    if(!shopItems.find(function(x){return x.name===i.name;})) shopItems.push({id:Date.now()+Math.random(),name:i.name,price:i.price,checked:false});
+  });
+  renderShop(); showScreen('indkob');
+}
+
+// ── INIT ──────────────────────────────────────────────────────
+updateNew(null);
+renderAll();
+renderShop();
+renderRecipeIngs();
+</script>
+</body>
+</html>
