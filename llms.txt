@@ -1,0 +1,85 @@
+# Levain — Surdejsbrød App
+
+> En dansk app der hjælper folk med at bage det perfekte surdejsbrød.
+> Built by Walther Vindnæs (walthervindnaes).
+
+## Project overview
+
+Levain is a sourdough bread app targeting Danish-speaking users. It consists of:
+- A **marketing landing page** (`index.html`) that presents the product and subscription plans
+- A **web app page** (`side001.html`) — the main bread recipe generator with sliders for sourness, crustiness, and openness, plus a schedule planner and notifications
+- A **payment success page** (`success.html`) shown after a Stripe checkout completes
+- A **Node.js/Express backend** (`server.js`) handling Stripe subscriptions — this runs separately and is NOT hosted on GitHub Pages
+- **Business logic modules** for a future React Native mobile app
+
+The live GitHub Pages site serves only the static HTML files:
+- `https://walthervindnaes.github.io/surdej-app-001/` → `index.html` (landing page)
+- `https://walthervindnaes.github.io/surdej-app-001/side001.html` → app page
+- `https://walthervindnaes.github.io/surdej-app-001/success.html` → payment success
+
+## Tech stack
+
+- **Frontend (static):** Plain HTML, CSS (inline), vanilla JavaScript — no build step
+- **Fonts:** Google Fonts — Playfair Display + DM Sans
+- **Backend:** Node.js, Express, Stripe (subscriptions + webhooks)
+- **Mobile (future):** React Native (App.js, AppNavigator.js, RecipeScreen.js, StarterCheckScreen.js)
+- **Deployment:** GitHub Pages via GitHub Actions (auto-deploys on push to `main`)
+
+## File structure
+
+```
+/
+├── index.html              # Landing page — marketing site, subscription tiers, login modal
+├── side001.html            # Main app — bread recipe generator, schedule, notifications
+├── success.html            # Stripe payment success confirmation page
+├── server.js               # Express backend — serves static files + Stripe API routes
+├── create-checkout.js      # Stripe checkout session helper
+├── webhook.js              # Stripe webhook handler
+├── package.json            # Node.js dependencies (Express, Stripe, dotenv, cors)
+├── breadEngine.js          # Core recipe algorithm — takes sliders (sourness/crustiness/openness) and returns full recipe with ingredients and time schedule
+├── breadNotifications.js   # Push notification logic for baking reminders
+├── starterAnalysis.js      # Sourdough starter health analysis logic
+├── App.js                  # React Native root component
+├── AppNavigator.js         # React Native navigation (screens and tabs)
+├── RecipeScreen.js         # React Native recipe screen UI
+├── StarterCheckScreen.js   # React Native starter health check screen
+└── .github/workflows/
+    └── deploy.yml          # GitHub Actions — auto-deploys to GitHub Pages on push to main
+```
+
+## Key business logic
+
+### Subscription tiers (Stripe)
+- **Mini** — 25 kr/month
+- **Mellem** — 35 kr/month (14-day free trial)
+- **Premium** — 100 kr/month
+
+### Bread recipe engine (`breadEngine.js`)
+The `generateRecipe()` function accepts:
+- `sourness` (0–100) — controls starter percentage and fermentation time
+- `crustiness` (0–100) — controls baking temperature and steam
+- `openness` (0–100) — controls hydration level
+- `timeMode` — `'quick'` | `'evening'` | `'weekend'`
+- `flourGrams` — base flour weight (default 450g)
+
+Returns a full recipe with ingredients, hydration percentages, and a step-by-step time schedule.
+
+## Development
+
+### Run the backend locally
+```bash
+npm install
+cp .env.example .env   # add STRIPE_SECRET_KEY, STRIPE_WEBHOOK_SECRET, DOMAIN
+npm run dev            # starts nodemon on port 3000
+```
+
+### Deploy frontend
+Push to `main` — GitHub Actions handles deployment automatically to GitHub Pages.
+
+### Environment variables (backend only)
+- `STRIPE_SECRET_KEY` — Stripe secret key
+- `STRIPE_WEBHOOK_SECRET` — Stripe webhook signing secret
+- `DOMAIN` — Public URL for success/cancel redirects (e.g. https://walthervindnaes.github.io/surdej-app-001)
+
+## Language
+The app is written in Danish (da). All UI text, comments in JS files, and variable names in business logic are in Danish.
