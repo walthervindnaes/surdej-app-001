@@ -6,644 +6,192 @@
 <title>Levain — Bag dit perfekte surdejsbrød</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{--cream:#F7F3EC;--white:#FDFAF5;--dark:#2C1E10;--mid:#6B4226;--amber:#D4854A;--amber-light:#F0B882;--green:#3A5A40;--muted:#7A6555;--border:rgba(44,30,16,0.1);}
+html{scroll-behavior:smooth;}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--dark);overflow-x:hidden;}
 
-  :root {
-    --cream: #F7F3EC;
-    --warm-white: #FDFAF5;
-    --brown-dark: #2C1E10;
-    --brown-mid: #6B4226;
-    --brown-light: #A0714F;
-    --amber: #D4854A;
-    --amber-light: #F0B882;
-    --green: #3A5A40;
-    --green-light: #7A9E7E;
-    --text: #2C1E10;
-    --text-muted: #7A6555;
-    --border: rgba(44,30,16,0.12);
-  }
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:18px 48px;display:flex;align-items:center;justify-content:space-between;background:rgba(247,243,236,0.95);backdrop-filter:blur(12px);border-bottom:0.5px solid var(--border);}
+.nav-logo{font-family:'Playfair Display',serif;font-size:22px;color:var(--dark);}
+.nav-logo span{font-style:italic;color:var(--amber);}
+.nav-links{display:flex;gap:28px;align-items:center;}
+.nav-links a{font-size:13px;color:var(--muted);text-decoration:none;transition:color 0.2s;}
+.nav-links a:hover{color:var(--dark);}
+.nav-cta{background:var(--dark)!important;color:var(--cream)!important;padding:9px 20px;border-radius:100px;font-size:13px!important;font-weight:500!important;}
+.nav-cta:hover{background:var(--mid)!important;}
+.nav-login{border:0.5px solid var(--border)!important;color:var(--dark)!important;padding:9px 20px;border-radius:100px;font-size:13px!important;font-weight:500!important;}
 
-  html { scroll-behavior: smooth; }
+/* HERO */
+.hero{min-height:100vh;display:grid;grid-template-columns:1fr 1fr;align-items:center;padding:120px 48px 80px;gap:60px;position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;top:-200px;right:-200px;width:700px;height:700px;background:radial-gradient(circle,rgba(212,133,74,0.12) 0%,transparent 70%);pointer-events:none;}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:11px;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;color:var(--amber);background:rgba(212,133,74,0.1);padding:6px 14px;border-radius:100px;margin-bottom:24px;}
+.hero-eyebrow::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--amber);}
+.hero-title{font-family:'Playfair Display',serif;font-size:clamp(42px,5vw,72px);font-weight:400;line-height:1.1;letter-spacing:-0.02em;margin-bottom:24px;}
+.hero-title em{font-style:italic;color:var(--amber);}
+.hero-sub{font-size:17px;font-weight:300;line-height:1.7;color:var(--muted);max-width:420px;margin-bottom:40px;}
+.hero-actions{display:flex;align-items:center;gap:16px;}
+.btn-primary{background:var(--dark);color:var(--cream);padding:14px 28px;border-radius:100px;font-size:14px;font-weight:500;border:none;cursor:pointer;transition:all 0.2s;text-decoration:none;display:inline-block;}
+.btn-primary:hover{background:var(--mid);transform:translateY(-1px);}
+.hero-visual{display:flex;justify-content:center;align-items:center;position:relative;}
+.bread-circle{width:400px;height:400px;border-radius:50%;background:#E8D9C4;display:flex;align-items:center;justify-content:center;position:relative;}
+.bread-inner{width:300px;height:300px;border-radius:50%;background:#C8A882;display:flex;align-items:center;justify-content:center;}
+.bread-score{position:absolute;border:2px solid rgba(255,255,255,0.3);border-radius:50%;}
+.bread-score:nth-child(1){width:180px;height:180px;}
+.bread-score:nth-child(2){width:120px;height:120px;transform:rotate(45deg);border-radius:0;}
+.float-tag{position:absolute;background:var(--white);border:0.5px solid var(--border);border-radius:12px;padding:10px 14px;font-size:12px;box-shadow:0 4px 20px rgba(44,30,16,0.08);}
+.float-tag strong{display:block;font-size:15px;font-weight:500;color:var(--dark);}
+.float-tag span{color:var(--muted);font-size:11px;}
+.tag1{top:40px;left:-20px;animation:float 4s ease-in-out infinite;}
+.tag2{bottom:60px;right:-30px;animation:float 4s ease-in-out 2s infinite;}
+.tag3{top:180px;right:-50px;animation:float 4s ease-in-out 1s infinite;}
+@keyframes float{0%,100%{transform:translateY(0);}50%{transform:translateY(-8px);}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
 
-  body {
-    font-family: 'DM Sans', sans-serif;
-    background: var(--cream);
-    color: var(--text);
-    overflow-x: hidden;
-  }
+/* STATS */
+.stats-strip{background:var(--dark);padding:28px 48px;display:flex;justify-content:center;gap:80px;align-items:center;}
+.stat{text-align:center;}
+.stat-num{font-family:'Playfair Display',serif;font-size:32px;color:var(--amber-light);}
+.stat-label{font-size:12px;color:rgba(253,250,245,0.5);letter-spacing:0.06em;margin-top:2px;}
 
-  /* NAV */
-  nav {
-    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-    padding: 20px 48px;
-    display: flex; align-items: center; justify-content: space-between;
-    background: rgba(247,243,236,0.92);
-    backdrop-filter: blur(12px);
-    border-bottom: 0.5px solid var(--border);
-  }
-  .nav-logo {
-    font-family: 'Playfair Display', serif;
-    font-size: 22px; font-weight: 400;
-    letter-spacing: 0.02em;
-    color: var(--brown-dark);
-  }
-  .nav-logo span { font-style: italic; color: var(--amber); }
-  .nav-links { display: flex; gap: 32px; align-items: center; }
-  .nav-links a {
-    font-size: 13px; font-weight: 400; color: var(--text-muted);
-    text-decoration: none; letter-spacing: 0.03em;
-    transition: color 0.2s;
-  }
-  .nav-links a:hover { color: var(--brown-dark); }
-  .nav-cta {
-    background: var(--brown-dark) !important;
-    color: var(--cream) !important;
-    padding: 9px 20px;
-    border-radius: 100px;
-    font-size: 13px !important;
-    font-weight: 500 !important;
-    transition: background 0.2s !important;
-  }
-  .nav-cta:hover { background: var(--brown-mid) !important; }
-  .nav-login {
-    border: 0.5px solid var(--border) !important;
-    color: var(--brown-dark) !important;
-    padding: 9px 20px;
-    border-radius: 100px;
-    font-size: 13px !important;
-    font-weight: 500 !important;
-    transition: background 0.2s !important;
-  }
-  .nav-login:hover { background: var(--warm-white) !important; }
+/* SECTIONS */
+.section{padding:100px 48px;}
+.section-label{font-size:11px;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;color:var(--amber);margin-bottom:16px;}
+.section-title{font-family:'Playfair Display',serif;font-size:clamp(30px,3.5vw,50px);font-weight:400;line-height:1.15;margin-bottom:16px;}
+.section-title em{font-style:italic;}
+.section-sub{font-size:16px;color:var(--muted);font-weight:300;line-height:1.7;max-width:480px;margin-bottom:56px;}
 
-  /* HERO */
-  .hero {
-    min-height: 100vh;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    align-items: center;
-    padding: 120px 48px 80px;
-    gap: 60px;
-    position: relative;
-    overflow: hidden;
-  }
-  .hero::before {
-    content: '';
-    position: absolute; top: -200px; right: -200px;
-    width: 700px; height: 700px;
-    background: radial-gradient(circle, rgba(212,133,74,0.15) 0%, transparent 70%);
-    pointer-events: none;
-  }
-  .hero-eyebrow {
-    display: inline-flex; align-items: center; gap: 8px;
-    font-size: 11px; font-weight: 500; letter-spacing: 0.12em;
-    text-transform: uppercase; color: var(--amber);
-    background: rgba(212,133,74,0.1);
-    padding: 6px 14px; border-radius: 100px;
-    margin-bottom: 28px;
-    opacity: 0; animation: fadeUp 0.8s 0.2s forwards;
-  }
-  .hero-eyebrow::before {
-    content: ''; width: 6px; height: 6px;
-    border-radius: 50%; background: var(--amber);
-  }
-  .hero-title {
-    font-family: 'Playfair Display', serif;
-    font-size: clamp(44px, 5.5vw, 76px);
-    font-weight: 400; line-height: 1.1;
-    letter-spacing: -0.02em;
-    color: var(--brown-dark);
-    margin-bottom: 24px;
-    opacity: 0; animation: fadeUp 0.8s 0.35s forwards;
-  }
-  .hero-title em { font-style: italic; color: var(--amber); }
-  .hero-sub {
-    font-size: 17px; font-weight: 300; line-height: 1.7;
-    color: var(--text-muted); max-width: 420px;
-    margin-bottom: 40px;
-    opacity: 0; animation: fadeUp 0.8s 0.5s forwards;
-  }
-  .hero-actions {
-    display: flex; align-items: center; gap: 16px;
-    opacity: 0; animation: fadeUp 0.8s 0.65s forwards;
-  }
-  .btn-primary {
-    background: var(--brown-dark); color: var(--cream);
-    padding: 14px 28px; border-radius: 100px;
-    font-size: 14px; font-weight: 500;
-    border: none; cursor: pointer;
-    transition: background 0.2s, transform 0.15s;
-    text-decoration: none; display: inline-block;
-  }
-  .btn-primary:hover { background: var(--brown-mid); transform: translateY(-1px); }
-  .btn-secondary {
-    font-size: 14px; color: var(--text-muted);
-    text-decoration: none; display: flex; align-items: center; gap: 6px;
-    transition: color 0.2s;
-  }
-  .btn-secondary:hover { color: var(--brown-dark); }
-  .btn-secondary svg { transition: transform 0.2s; }
-  .btn-secondary:hover svg { transform: translateX(3px); }
+/* HOW IT WORKS */
+.steps-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;}
+.step-card{background:var(--white);border:0.5px solid var(--border);border-radius:20px;padding:32px 28px;transition:transform 0.2s,box-shadow 0.2s;}
+.step-card:hover{transform:translateY(-4px);box-shadow:0 16px 40px rgba(44,30,16,0.08);}
+.step-num-big{font-family:'Playfair Display',serif;font-size:60px;font-weight:400;line-height:1;color:rgba(212,133,74,0.2);margin-bottom:16px;}
+.step-card h3{font-size:17px;font-weight:500;margin-bottom:10px;}
+.step-card p{font-size:14px;color:var(--muted);line-height:1.65;}
 
-  /* HERO VISUAL — bread illustration */
-  .hero-visual {
-    display: flex; justify-content: center; align-items: center;
-    opacity: 0; animation: fadeIn 1s 0.5s forwards;
-    position: relative;
-  }
-  .bread-circle {
-    width: 420px; height: 420px; border-radius: 50%;
-    background: #E8D9C4;
-    display: flex; align-items: center; justify-content: center;
-    position: relative;
-    overflow: hidden;
-  }
-  .bread-inner {
-    width: 320px; height: 320px; border-radius: 50%;
-    background: #C8A882;
-    display: flex; align-items: center; justify-content: center;
-    position: relative;
-  }
-  .bread-score {
-    position: absolute;
-    border: 2px solid rgba(255,255,255,0.35);
-    border-radius: 50%;
-  }
-  .bread-score:nth-child(1) { width: 200px; height: 200px; }
-  .bread-score:nth-child(2) { width: 140px; height: 140px; transform: rotate(45deg); border-radius: 0; }
-  .bread-score:nth-child(3) {
-    width: 0; height: 80px;
-    border: none; border-left: 2px solid rgba(255,255,255,0.35);
-    transform: rotate(-30deg); top: 30px;
-  }
-  .bread-score:nth-child(4) {
-    width: 60px; height: 0;
-    border: none; border-top: 2px solid rgba(255,255,255,0.35);
-    transform: rotate(15deg); bottom: 50px; right: 30px;
-  }
-  .bread-label {
-    position: absolute; bottom: -20px; left: 50%; transform: translateX(-50%);
-    font-family: 'Playfair Display', serif; font-style: italic;
-    font-size: 13px; color: var(--text-muted); white-space: nowrap;
-  }
-  .float-tag {
-    position: absolute;
-    background: var(--warm-white);
-    border: 0.5px solid var(--border);
-    border-radius: 12px;
-    padding: 10px 14px;
-    font-size: 12px;
-    box-shadow: 0 4px 20px rgba(44,30,16,0.08);
-  }
-  .float-tag strong { display: block; font-size: 15px; font-weight: 500; color: var(--brown-dark); }
-  .float-tag span { color: var(--text-muted); font-size: 11px; }
-  .tag1 { top: 40px; left: -20px; animation: float 4s ease-in-out infinite; }
-  .tag2 { bottom: 60px; right: -30px; animation: float 4s ease-in-out 2s infinite; }
-  .tag3 { top: 180px; right: -50px; animation: float 4s ease-in-out 1s infinite; }
+/* CONCEPT */
+.concept-section{padding:100px 48px;display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;}
+.concept-pill{display:inline-flex;align-items:center;gap:8px;background:var(--white);border:0.5px solid var(--border);border-radius:100px;padding:8px 16px;font-size:13px;color:var(--muted);margin-bottom:10px;margin-right:8px;}
+.concept-pill-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.phone-frame{width:240px;height:490px;background:var(--dark);border-radius:38px;border:5px solid #1a1108;position:relative;overflow:hidden;margin:0 auto;box-shadow:0 32px 64px rgba(44,30,16,0.25);}
+.phone-notch{width:80px;height:22px;background:#1a1108;border-radius:0 0 14px 14px;position:absolute;top:0;left:50%;transform:translateX(-50%);z-index:10;}
+.phone-screen{width:100%;height:100%;padding:38px 14px 16px;display:flex;flex-direction:column;gap:10px;}
+.phone-header{font-family:'Playfair Display',serif;font-size:15px;font-style:italic;color:var(--cream);margin-bottom:2px;}
+.phone-slider-block{margin-bottom:2px;}
+.phone-slider-label{display:flex;justify-content:space-between;font-size:9px;color:rgba(247,243,236,0.6);margin-bottom:4px;}
+.phone-track{height:3px;background:rgba(247,243,236,0.1);border-radius:2px;position:relative;}
+.phone-fill{height:100%;border-radius:2px;position:absolute;top:0;left:0;transition:width 0.4s cubic-bezier(0.4,0,0.2,1);}
+.phone-thumb{width:11px;height:11px;border-radius:50%;background:var(--cream);border:2px solid var(--amber);position:absolute;top:50%;transform:translate(-50%,-50%);transition:left 0.4s cubic-bezier(0.4,0,0.2,1);}
+.phone-result{background:rgba(247,243,236,0.06);border:0.5px solid rgba(247,243,236,0.1);border-radius:12px;padding:10px;}
+.phone-result-row{display:flex;justify-content:space-between;font-size:9px;padding:3px 0;border-bottom:0.5px solid rgba(247,243,236,0.06);color:rgba(247,243,236,0.5);}
+.phone-result-row:last-child{border-bottom:none;}
+.phone-result-row span:last-child{color:var(--cream);font-weight:500;}
+.phone-btn{background:var(--amber);color:var(--dark);border-radius:100px;padding:8px;font-size:10px;font-weight:500;text-align:center;margin-top:auto;}
 
-  @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
-  @keyframes fadeUp { from { opacity:0; transform: translateY(20px); } to { opacity:1; transform: translateY(0); } }
-  @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+/* FAQ */
+.faq-section{padding:100px 48px;background:var(--white);}
+.faq-grid{max-width:680px;}
+.faq-item{border-bottom:0.5px solid var(--border);padding:20px 0;cursor:pointer;}
+.faq-q{display:flex;justify-content:space-between;align-items:center;font-size:16px;font-weight:500;color:var(--dark);}
+.faq-icon{font-size:20px;color:var(--amber);transition:transform 0.2s;flex-shrink:0;}
+.faq-a{font-size:14px;color:var(--muted);line-height:1.7;max-height:0;overflow:hidden;transition:max-height 0.3s ease,padding 0.3s;}
+.faq-item.open .faq-a{max-height:200px;padding-top:12px;}
+.faq-item.open .faq-icon{transform:rotate(45deg);}
 
-  /* STATS STRIP */
-  .stats-strip {
-    background: var(--brown-dark);
-    padding: 28px 48px;
-    display: flex; justify-content: center; gap: 80px;
-    align-items: center;
-  }
-  .stat { text-align: center; }
-  .stat-num {
-    font-family: 'Playfair Display', serif;
-    font-size: 32px; color: var(--amber-light);
-    font-weight: 400;
-  }
-  .stat-label { font-size: 12px; color: rgba(253,250,245,0.5); letter-spacing: 0.06em; margin-top: 2px; }
+/* TESTIMONIALS */
+.testimonial-section{padding:100px 48px;}
+.testimonial-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+.testimonial-card{background:var(--white);border:0.5px solid var(--border);border-radius:20px;padding:28px;}
+.testimonial-stars{color:var(--amber);font-size:14px;margin-bottom:12px;letter-spacing:2px;}
+.testimonial-text{font-size:14px;color:var(--muted);line-height:1.7;margin-bottom:16px;font-style:italic;}
+.testimonial-author{display:flex;align-items:center;gap:10px;}
+.testimonial-avatar{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:500;}
+.testimonial-name{font-size:13px;font-weight:500;color:var(--dark);}
+.testimonial-role{font-size:11px;color:var(--muted);}
 
-  /* HOW IT WORKS */
-  .section { padding: 100px 48px; }
-  .section-label {
-    font-size: 11px; font-weight: 500; letter-spacing: 0.12em;
-    text-transform: uppercase; color: var(--amber);
-    margin-bottom: 16px;
-  }
-  .section-title {
-    font-family: 'Playfair Display', serif;
-    font-size: clamp(32px, 3.5vw, 52px);
-    font-weight: 400; line-height: 1.15;
-    color: var(--brown-dark); margin-bottom: 16px;
-  }
-  .section-title em { font-style: italic; }
-  .section-sub {
-    font-size: 16px; color: var(--text-muted);
-    font-weight: 300; line-height: 1.7; max-width: 480px;
-    margin-bottom: 60px;
-  }
+/* DARK SECTION */
+.dark-section{background:var(--dark);padding:100px 48px;position:relative;overflow:hidden;}
+.dark-section::before{content:'';position:absolute;top:-300px;left:50%;transform:translateX(-50%);width:800px;height:800px;background:radial-gradient(circle,rgba(212,133,74,0.1) 0%,transparent 60%);pointer-events:none;}
+.dark-section .section-title{color:var(--cream);}
+.dark-section .section-label{color:var(--amber-light);}
+.dark-section .section-sub{color:rgba(247,243,236,0.55);}
 
-  .steps-grid {
-    display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
-  }
-  .step-card {
-    background: var(--warm-white);
-    border: 0.5px solid var(--border);
-    border-radius: 20px;
-    padding: 32px 28px;
-    position: relative;
-    transition: transform 0.2s, box-shadow 0.2s;
-  }
-  .step-card:hover { transform: translateY(-4px); box-shadow: 0 16px 40px rgba(44,30,16,0.08); }
-  .step-num-big {
-    font-family: 'Playfair Display', serif;
-    font-size: 64px; font-weight: 400; line-height: 1;
-    color: rgba(212,133,74,0.2);
-    margin-bottom: 16px;
-  }
-  .step-card h3 {
-    font-size: 17px; font-weight: 500; margin-bottom: 10px;
-    color: var(--brown-dark);
-  }
-  .step-card p {
-    font-size: 14px; color: var(--text-muted);
-    line-height: 1.65;
-  }
+/* MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;z-index:999;background:rgba(44,30,16,0.45);align-items:center;justify-content:center;padding:20px;}
+.modal-overlay.open{display:flex;}
+.modal-box{background:var(--white);border-radius:24px;border:0.5px solid var(--border);width:100%;max-width:400px;padding:36px 32px;position:relative;}
+.modal-close{position:absolute;top:16px;right:16px;width:32px;height:32px;border-radius:50%;background:var(--cream);border:0.5px solid var(--border);cursor:pointer;font-size:16px;color:var(--muted);display:flex;align-items:center;justify-content:center;}
+.modal-logo{font-family:'Playfair Display',serif;font-size:20px;color:var(--dark);margin-bottom:20px;text-align:center;}
+.modal-logo span{font-style:italic;color:var(--amber);}
+.modal-tabs{display:flex;background:var(--cream);border-radius:100px;padding:4px;margin-bottom:24px;}
+.modal-tab{flex:1;text-align:center;padding:8px;font-size:13px;font-weight:500;color:var(--muted);border-radius:100px;cursor:pointer;border:none;background:transparent;transition:all 0.2s;}
+.modal-tab-active{background:var(--white);color:var(--dark);}
+.modal-form{display:flex;flex-direction:column;gap:12px;}
+.modal-label{font-size:12px;color:var(--muted);margin-bottom:4px;display:block;}
+.modal-input{width:100%;padding:11px 14px;border:0.5px solid var(--border);border-radius:10px;background:var(--cream);font-family:'DM Sans',sans-serif;font-size:14px;color:var(--dark);outline:none;transition:border-color 0.2s;}
+.modal-input:focus{border-color:var(--amber);}
+.modal-submit{width:100%;padding:13px;background:var(--dark);color:var(--cream);border:none;border-radius:100px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;cursor:pointer;margin-top:4px;transition:background 0.2s;}
+.modal-submit:hover{background:var(--mid);}
+.modal-divider{display:flex;align-items:center;gap:12px;font-size:12px;color:var(--muted);}
+.modal-divider::before,.modal-divider::after{content:'';flex:1;height:0.5px;background:var(--border);}
+.google-btn{width:100%;padding:11px;background:var(--cream);color:var(--dark);border:0.5px solid var(--border);border-radius:100px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;transition:background 0.2s;}
+.google-btn:hover{background:#f0ebe3;}
+.modal-error{font-size:13px;color:#A32D2D;background:#FCEBEB;border:0.5px solid #F09595;border-radius:10px;padding:10px 12px;display:none;}
+.modal-error.visible{display:block;}
 
-  /* SLIDER DEMO */
-  .demo-section {
-    background: var(--brown-dark);
-    padding: 100px 48px;
-    position: relative; overflow: hidden;
-  }
-  .demo-section::before {
-    content: '';
-    position: absolute; top: -300px; left: 50%; transform: translateX(-50%);
-    width: 800px; height: 800px;
-    background: radial-gradient(circle, rgba(212,133,74,0.12) 0%, transparent 60%);
-    pointer-events: none;
-  }
-  .demo-section .section-title { color: var(--cream); }
-  .demo-section .section-label { color: var(--amber-light); }
-  .demo-section .section-sub { color: rgba(247,243,236,0.6); }
+/* FOOTER */
+footer{background:var(--dark);padding:60px 48px 40px;}
+.footer-top{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;margin-bottom:48px;}
+.footer-brand{font-family:'Playfair Display',serif;font-size:22px;color:var(--cream);margin-bottom:12px;}
+.footer-brand span{font-style:italic;color:var(--amber-light);}
+.footer-desc{font-size:13px;color:rgba(253,250,245,0.45);line-height:1.7;max-width:240px;}
+.footer-col-title{font-size:12px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:rgba(253,250,245,0.4);margin-bottom:16px;}
+.footer-col a{display:block;font-size:13px;color:rgba(253,250,245,0.55);text-decoration:none;margin-bottom:10px;transition:color 0.2s;}
+.footer-col a:hover{color:var(--amber-light);}
+.footer-bottom{display:flex;justify-content:space-between;align-items:center;border-top:0.5px solid rgba(253,250,245,0.08);padding-top:28px;}
+.footer-copy{font-size:12px;color:rgba(253,250,245,0.3);}
 
-  .demo-grid {
-    display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center;
-  }
-  .demo-sliders { }
-  .demo-slider-row {
-    margin-bottom: 28px;
-  }
-  .demo-slider-top {
-    display: flex; justify-content: space-between; align-items: center;
-    margin-bottom: 10px;
-  }
-  .demo-slider-name { font-size: 13px; font-weight: 500; color: var(--cream); letter-spacing: 0.02em; }
-  .demo-slider-val {
-    font-size: 12px; padding: 3px 10px; border-radius: 100px;
-    font-weight: 500;
-  }
-  .demo-track {
-    position: relative; height: 4px;
-    background: rgba(247,243,236,0.1); border-radius: 2px;
-  }
-  .demo-fill {
-    position: absolute; left: 0; top: 0; bottom: 0;
-    border-radius: 2px;
-    transition: width 0.4s cubic-bezier(0.4,0,0.2,1);
-  }
-  .demo-thumb {
-    position: absolute; top: 50%; transform: translate(-50%, -50%);
-    width: 16px; height: 16px; border-radius: 50%;
-    border: 2px solid var(--cream);
-    cursor: grab;
-    transition: left 0.4s cubic-bezier(0.4,0,0.2,1);
-  }
-  .demo-ends {
-    display: flex; justify-content: space-between; margin-top: 6px;
-    font-size: 10px; color: rgba(247,243,236,0.35); letter-spacing: 0.04em;
-  }
+/* DARK MODE TOGGLE */
+.dark-toggle{position:fixed;bottom:24px;right:24px;z-index:500;width:44px;height:44px;border-radius:50%;background:var(--dark);color:var(--cream);border:none;font-size:18px;cursor:pointer;box-shadow:0 4px 20px rgba(44,30,16,0.2);transition:all 0.2s;}
+.dark-toggle:hover{transform:scale(1.1);}
+body.dark-mode{background:#1a1108;color:#F7F3EC;}
+body.dark-mode nav{background:rgba(26,17,8,0.95);border-color:rgba(247,243,236,0.08);}
+body.dark-mode .step-card,body.dark-mode .float-tag,body.dark-mode .testimonial-card,body.dark-mode .faq-section{background:#2C1E10;border-color:rgba(247,243,236,0.08);}
+body.dark-mode .hero-title,body.dark-mode .section-title,body.dark-mode .step-card h3,body.dark-mode .faq-q{color:#F7F3EC;}
+body.dark-mode .hero-sub,body.dark-mode .section-sub,body.dark-mode .step-card p,body.dark-mode .faq-a,body.dark-mode .testimonial-text{color:rgba(247,243,236,0.55);}
+body.dark-mode .concept-pill{background:#2C1E10;border-color:rgba(247,243,236,0.08);color:rgba(247,243,236,0.55);}
+body.dark-mode .dark-toggle{background:var(--amber);color:var(--dark);}
 
-  .demo-result {
-    background: rgba(247,243,236,0.06);
-    border: 0.5px solid rgba(247,243,236,0.12);
-    border-radius: 20px; padding: 32px;
-  }
-  .demo-result-label {
-    font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
-    color: rgba(247,243,236,0.4); margin-bottom: 20px;
-  }
-  .result-metric {
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 12px 0;
-    border-bottom: 0.5px solid rgba(247,243,236,0.08);
-    font-size: 13px;
-  }
-  .result-metric:last-child { border-bottom: none; }
-  .result-metric-name { color: rgba(247,243,236,0.55); }
-  .result-metric-val { font-weight: 500; color: var(--cream); }
-  .result-conflict {
-    margin-top: 20px; padding: 12px 16px;
-    background: rgba(212,133,74,0.12);
-    border: 0.5px solid rgba(212,133,74,0.25);
-    border-radius: 12px;
-    font-size: 12px; color: var(--amber-light); line-height: 1.55;
-    min-height: 48px;
-  }
-
-  /* WAITLIST */
-  .waitlist-section {
-    padding: 120px 48px;
-    text-align: center;
-    position: relative; overflow: hidden;
-  }
-  .waitlist-section::before {
-    content: '';
-    position: absolute; bottom: -200px; left: 50%; transform: translateX(-50%);
-    width: 600px; height: 600px;
-    background: radial-gradient(circle, rgba(58,90,64,0.15) 0%, transparent 65%);
-    pointer-events: none;
-  }
-  .waitlist-section .section-title { max-width: 600px; margin: 0 auto 16px; }
-  .waitlist-section .section-sub { margin: 0 auto 48px; text-align: center; }
-  .waitlist-form {
-    display: flex; gap: 0; max-width: 440px; margin: 0 auto 16px;
-    border: 1px solid var(--border);
-    border-radius: 100px;
-    overflow: hidden;
-    background: var(--warm-white);
-    box-shadow: 0 4px 24px rgba(44,30,16,0.06);
-  }
-  .waitlist-input {
-    flex: 1; padding: 14px 20px;
-    border: none; background: transparent;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 14px; color: var(--brown-dark);
-    outline: none;
-  }
-  .waitlist-input::placeholder { color: var(--text-muted); }
-  .waitlist-btn {
-    background: var(--brown-dark); color: var(--cream);
-    border: none; padding: 14px 24px; cursor: pointer;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 13px; font-weight: 500;
-    border-radius: 100px; margin: 4px;
-    transition: background 0.2s;
-  }
-  .waitlist-btn:hover { background: var(--amber); }
-  .waitlist-note { font-size: 12px; color: var(--text-muted); }
-  .success-msg {
-    display: none; margin-top: 16px;
-    font-size: 14px; color: var(--green);
-    font-weight: 500;
-  }
-
-  /* TEAM */
-  .team-section { padding: 100px 48px; background: var(--warm-white); }
-  .team-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 24px; max-width: 800px; }
-  .team-card {
-    border: 0.5px solid var(--border); border-radius: 20px;
-    padding: 28px; background: var(--cream);
-    transition: transform 0.2s;
-  }
-  .team-card:hover { transform: translateY(-3px); }
-  .team-avatar {
-    width: 56px; height: 56px; border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    font-family: 'Playfair Display', serif;
-    font-size: 20px; font-style: italic;
-    margin-bottom: 16px;
-  }
-  .team-name { font-size: 16px; font-weight: 500; color: var(--brown-dark); margin-bottom: 4px; }
-  .team-role { font-size: 12px; color: var(--text-muted); letter-spacing: 0.04em; margin-bottom: 12px; }
-  .team-bio { font-size: 13px; color: var(--text-muted); line-height: 1.6; }
-
-  /* FOOTER */
-  footer {
-    background: var(--brown-dark); padding: 48px;
-    display: flex; justify-content: space-between; align-items: center;
-  }
-  .footer-logo {
-    font-family: 'Playfair Display', serif;
-    font-size: 20px; color: var(--cream); font-weight: 400;
-  }
-  .footer-logo span { font-style: italic; color: var(--amber-light); }
-  .footer-copy { font-size: 12px; color: rgba(253,250,245,0.35); }
-  .footer-links { display: flex; gap: 24px; }
-  .footer-links a { font-size: 12px; color: rgba(253,250,245,0.4); text-decoration: none; transition: color 0.2s; }
-  .footer-links a:hover { color: var(--amber-light); }
-
-  input[type=range] {
-    -webkit-appearance: none; appearance: none;
-    width: 100%; height: 4px; border-radius: 2px;
-    background: rgba(247,243,236,0.15); outline: none; cursor: pointer;
-  }
-  input[type=range]::-webkit-slider-thumb {
-    -webkit-appearance: none; width: 18px; height: 18px;
-    border-radius: 50%; background: var(--cream);
-    border: 2px solid var(--amber); cursor: grab;
-  }
-
-  /* CONCEPT */
-  .concept-section {
-    padding: 100px 48px;
-    display: grid; grid-template-columns: 1fr 1fr;
-    gap: 80px; align-items: center;
-  }
-  .concept-text .section-sub { margin-bottom: 32px; }
-  .concept-pill {
-    display: inline-flex; align-items: center; gap: 8px;
-    background: var(--warm-white); border: 0.5px solid var(--border);
-    border-radius: 100px; padding: 8px 16px;
-    font-size: 13px; color: var(--text-muted);
-    margin-bottom: 10px; margin-right: 8px;
-  }
-  .concept-pill-dot {
-    width: 7px; height: 7px; border-radius: 50%;
-    flex-shrink: 0;
-  }
-  .phone-frame {
-    width: 260px; height: 520px; margin: 0 auto;
-    background: var(--brown-dark);
-    border-radius: 40px;
-    border: 6px solid #1a1108;
-    position: relative; overflow: hidden;
-    box-shadow: 0 32px 64px rgba(44,30,16,0.25);
-  }
-  .phone-notch {
-    width: 90px; height: 26px;
-    background: #1a1108; border-radius: 0 0 18px 18px;
-    position: absolute; top: 0; left: 50%; transform: translateX(-50%);
-    z-index: 10;
-  }
-  .phone-screen {
-    width: 100%; height: 100%;
-    padding: 44px 16px 20px;
-    display: flex; flex-direction: column; gap: 12px;
-  }
-  .phone-header {
-    font-family: 'Playfair Display', serif;
-    font-size: 16px; font-style: italic;
-    color: var(--cream); margin-bottom: 4px;
-  }
-  .phone-sub { font-size: 10px; color: rgba(247,243,236,0.4); margin-bottom: 8px; }
-  .phone-slider-block { margin-bottom: 4px; }
-  .phone-slider-label {
-    display: flex; justify-content: space-between;
-    font-size: 10px; color: rgba(247,243,236,0.6);
-    margin-bottom: 6px;
-  }
-  .phone-track {
-    height: 3px; background: rgba(247,243,236,0.1);
-    border-radius: 2px; position: relative;
-  }
-  .phone-fill {
-    height: 100%; border-radius: 2px;
-    position: absolute; top: 0; left: 0;
-  }
-  .phone-thumb {
-    width: 12px; height: 12px; border-radius: 50%;
-    background: var(--cream); border: 2px solid var(--amber);
-    position: absolute; top: 50%; transform: translate(-50%,-50%);
-  }
-  .phone-result {
-    background: rgba(247,243,236,0.06);
-    border: 0.5px solid rgba(247,243,236,0.1);
-    border-radius: 14px; padding: 12px;
-    margin-top: 4px;
-  }
-  .phone-result-row {
-    display: flex; justify-content: space-between;
-    font-size: 10px; padding: 4px 0;
-    border-bottom: 0.5px solid rgba(247,243,236,0.06);
-    color: rgba(247,243,236,0.55);
-  }
-  .phone-result-row:last-child { border-bottom: none; }
-  .phone-result-row span:last-child { color: var(--cream); font-weight: 500; }
-  .phone-btn {
-    background: var(--amber); color: var(--brown-dark);
-    border-radius: 100px; padding: 10px;
-    font-size: 11px; font-weight: 500;
-    text-align: center; margin-top: auto;
-  }
-
-  @keyframes slideIn { from { opacity:0; transform: translateX(10px); } to { opacity:1; transform: translateX(0); } }
-  .phone-anim { animation: slideIn 0.6s ease forwards; }
-
-  @media (max-width: 768px) {
-    .concept-section { grid-template-columns: 1fr; padding: 60px 20px; gap: 40px; }
-    .phone-frame { width: 220px; height: 440px; }
-  }
-
-  /* PRICING */
-  .pricing-section { padding: 100px 48px; background: var(--warm-white); }
-  .pricing-grid {
-    display: grid; grid-template-columns: repeat(3, minmax(0,1fr));
-    gap: 20px; max-width: 900px;
-  }
-  .price-card {
-    background: var(--cream); border: 0.5px solid var(--border);
-    border-radius: 24px; padding: 32px 28px;
-    display: flex; flex-direction: column;
-    transition: transform 0.2s, box-shadow 0.2s;
-  }
-  .price-card:hover { transform: translateY(-4px); box-shadow: 0 16px 40px rgba(44,30,16,0.08); }
-  .price-card.featured {
-    background: var(--brown-dark);
-    border: 2px solid var(--amber);
-  }
-  .price-badge {
-    display: inline-block; font-size: 10px; font-weight: 500;
-    letter-spacing: 0.1em; text-transform: uppercase;
-    padding: 4px 12px; border-radius: 100px;
-    margin-bottom: 20px; align-self: flex-start;
-  }
-  .price-badge.pop { background: rgba(212,133,74,0.18); color: var(--amber); }
-  .price-badge.free { background: rgba(58,90,64,0.12); color: var(--green); }
-  .price-badge.pro { background: rgba(212,133,74,0.25); color: var(--amber-light); }
-  .price-name { font-size: 14px; font-weight: 500; margin-bottom: 8px; color: var(--text-muted); }
-  .price-card.featured .price-name { color: rgba(247,243,236,0.55); }
-  .price-amount {
-    font-family: 'Playfair Display', serif;
-    font-size: 44px; font-weight: 400; line-height: 1;
-    color: var(--brown-dark); margin-bottom: 4px;
-  }
-  .price-card.featured .price-amount { color: var(--cream); }
-  .price-period { font-size: 12px; color: var(--text-muted); margin-bottom: 24px; }
-  .price-card.featured .price-period { color: rgba(247,243,236,0.45); }
-  .price-divider { height: 0.5px; background: var(--border); margin-bottom: 20px; }
-  .price-card.featured .price-divider { background: rgba(247,243,236,0.1); }
-  .price-features { list-style: none; flex: 1; margin-bottom: 28px; }
-  .price-features li {
-    font-size: 13px; color: var(--text-muted);
-    padding: 7px 0; display: flex; align-items: center; gap: 10px;
-    border-bottom: 0.5px solid var(--border);
-  }
-  .price-features li:last-child { border-bottom: none; }
-  .price-card.featured .price-features li { color: rgba(247,243,236,0.65); border-color: rgba(247,243,236,0.08); }
-  .price-features li::before {
-    content: ''; width: 14px; height: 14px; flex-shrink: 0;
-    border-radius: 50%; background: rgba(58,90,64,0.15);
-    background-image: url("data:image/svg+xml,%3Csvg width='10' height='8' viewBox='0 0 10 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 4l3 3 5-6' stroke='%233A5A40' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-    background-repeat: no-repeat; background-position: center;
-  }
-  .price-card.featured .price-features li::before {
-    background-color: rgba(212,133,74,0.2);
-    background-image: url("data:image/svg+xml,%3Csvg width='10' height='8' viewBox='0 0 10 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 4l3 3 5-6' stroke='%23F0B882' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-  }
-  .price-features li.muted::before {
-    background-image: url("data:image/svg+xml,%3Csvg width='10' height='8' viewBox='0 0 10 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M2 6L8 2M2 2l6 4' stroke='%23B4B2A9' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");
-    background-color: rgba(180,178,169,0.12);
-  }
-  .price-features li.muted { opacity: 0.5; }
-  .price-btn {
-    width: 100%; padding: 13px; border-radius: 100px;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 13px; font-weight: 500; cursor: pointer;
-    border: 1.5px solid var(--border);
-    background: transparent; color: var(--brown-dark);
-    transition: all 0.2s;
-  }
-  .price-btn:hover { background: var(--cream); border-color: var(--brown-mid); }
-  .price-btn.featured-btn {
-    background: var(--amber); color: var(--brown-dark);
-    border-color: var(--amber);
-  }
-  .price-btn.featured-btn:hover { background: var(--amber-light); border-color: var(--amber-light); }
-  .price-btn:disabled { opacity: 0.45; cursor: default; }
-  .stripe-note {
-    margin-top: 28px; text-align: center;
-    font-size: 12px; color: var(--text-muted);
-    display: flex; align-items: center; justify-content: center; gap: 8px;
-  }
-  .stripe-note svg { opacity: 0.4; }
-
-  @media (max-width: 768px) {
-    nav { padding: 16px 20px; }
-    .nav-links a:not(.nav-cta):not(.nav-login) { display: none; }
-    .nav-links { gap: 8px; }
-    .hero { grid-template-columns: 1fr; padding: 100px 20px 60px; }
-    .hero-visual { display: none; }
-    .section { padding: 60px 20px; }
-    .steps-grid { grid-template-columns: 1fr; }
-    .demo-section { padding: 60px 20px; }
-    .demo-grid { grid-template-columns: 1fr; }
-    .stats-strip { gap: 32px; padding: 24px 20px; flex-wrap: wrap; }
-    .team-section { padding: 60px 20px; }
-    footer { flex-direction: column; gap: 20px; padding: 32px 20px; text-align: center; }
-    .waitlist-section { padding: 80px 20px; }
-    .pricing-section { padding: 60px 20px; }
-    .pricing-grid { grid-template-columns: 1fr; }
-  }
+@media(max-width:768px){
+  nav{padding:16px 20px;}
+  .nav-links a:not(.nav-cta):not(.nav-login){display:none;}
+  .nav-links{gap:8px;}
+  .hero{grid-template-columns:1fr;padding:100px 20px 60px;}
+  .hero-visual{display:none;}
+  .section{padding:60px 20px;}
+  .steps-grid{grid-template-columns:1fr;}
+  .concept-section{grid-template-columns:1fr;padding:60px 20px;gap:40px;}
+  .testimonial-grid{grid-template-columns:1fr;}
+  .faq-section{padding:60px 20px;}
+  .testimonial-section{padding:60px 20px;}
+  .dark-section{padding:60px 20px;}
+  .stats-strip{gap:32px;padding:24px 20px;flex-wrap:wrap;}
+  footer{padding:48px 20px 32px;}
+  .footer-top{grid-template-columns:1fr 1fr;gap:32px;}
+  .footer-bottom{flex-direction:column;gap:16px;text-align:center;}
+}
 </style>
 </head>
 <body>
 
-<!-- NAV -->
 <nav>
   <div class="nav-logo">Le<span>vain</span></div>
   <div class="nav-links">
     <a href="#how">Sådan virker det</a>
     <a href="#koncept">Koncept</a>
+    <a href="#faq">FAQ</a>
     <a href="#koncept" class="nav-cta">Se konceptet</a>
-    <a href="#" onclick="event.preventDefault(); openLogin()" class="nav-cta" style="background:transparent;color:var(--brown-dark);border:1px solid var(--border);">Log ind</a>
+    <a href="#" onclick="event.preventDefault();openLogin()" class="nav-login">Log ind</a>
   </div>
 </nav>
 
@@ -651,15 +199,10 @@
 <section class="hero">
   <div>
     <div class="hero-eyebrow">Surdej, forenklet</div>
-    <h1 class="hero-title">
-      Bag det brød<br>du <em>drømmer</em> om
-    </h1>
-    <p class="hero-sub">
-      Ingen faste opskrifter. Design dit surdejsbrød med tre sliders — 
-      og lad AI'en beregne den præcise opskrift til netop dit brød.
-    </p>
+    <h1 class="hero-title">Bag det brød<br>du <em>drømmer</em> om</h1>
+    <p class="hero-sub">Ingen faste opskrifter. Design dit surdejsbrød med tre sliders — og lad AI'en beregne den præcise opskrift til netop dit brød.</p>
     <div class="hero-actions">
-      <a href="#koncept" class="btn-primary">Se konceptet</a>
+      <a href="#" onclick="event.preventDefault();openLogin()" class="btn-primary">Kom i gang gratis</a>
     </div>
   </div>
   <div class="hero-visual">
@@ -667,516 +210,304 @@
       <div class="bread-inner">
         <div class="bread-score"></div>
         <div class="bread-score"></div>
-        <div class="bread-score"></div>
-        <div class="bread-score"></div>
       </div>
     </div>
-    <div class="float-tag tag1">
-      <strong>74%</strong><span>Hydrering</span>
-    </div>
-    <div class="float-tag tag2">
-      <strong>18 timer</strong><span>Koldhævning</span>
-    </div>
-    <div class="float-tag tag3">
-      <strong>250°C</strong><span>Ovntemperatur</span>
-    </div>
-    <div class="bread-label">dit perfekte brød</div>
+    <div class="float-tag tag1"><strong>74%</strong><span>Hydrering</span></div>
+    <div class="float-tag tag2"><strong>18 timer</strong><span>Koldhævning</span></div>
+    <div class="float-tag tag3"><strong>250°C</strong><span>Ovntemperatur</span></div>
   </div>
 </section>
 
 <!-- STATS -->
 <div class="stats-strip">
-  <div class="stat">
-    <div class="stat-num">4</div>
-    <div class="stat-label">parametre</div>
-  </div>
-  <div class="stat">
-    <div class="stat-num">∞</div>
-    <div class="stat-label">kombinationer</div>
-  </div>
-  <div class="stat">
-    <div class="stat-num">1</div>
-    <div class="stat-label">perfekt brød</div>
-  </div>
+  <div class="stat"><div class="stat-num">4</div><div class="stat-label">parametre</div></div>
+  <div class="stat"><div class="stat-num">∞</div><div class="stat-label">kombinationer</div></div>
+  <div class="stat"><div class="stat-num">1</div><div class="stat-label">perfekt brød</div></div>
 </div>
-
-<!-- CONCEPT -->
-<section class="concept-section" id="koncept">
-  <div class="concept-text">
-    <div class="section-label">Vores koncept</div>
-    <h2 class="section-title">Ingen opskrifter.<br><em>Bare dit brød.</em></h2>
-    <p class="section-sub">
-      De fleste bagere følger en fast opskrift og håber på det bedste. 
-      Levain gør det omvendt — du bestemmer, hvordan brødet skal smage og føles, 
-      og appen beregner præcist hvad der skal til for at nå dertil.
-      AI-motoren bag forstår, hvordan surhed, sprødhed og luftighed påvirker hinanden, 
-      og guider dig fra dej til færdigt brød med klokkeslæt og gram.
-    </p>
-    <div>
-      <span class="concept-pill">
-        <span class="concept-pill-dot" style="background:#D4854A;"></span>
-        Designet til begyndere
-      </span>
-      <span class="concept-pill">
-        <span class="concept-pill-dot" style="background:#3A5A40;"></span>
-        Videnskabeligt funderet
-      </span>
-      <span class="concept-pill">
-        <span class="concept-pill-dot" style="background:#7F77DD;"></span>
-        AI-drevet opskrift
-      </span>
-      <span class="concept-pill">
-        <span class="concept-pill-dot" style="background:#1D9E75;"></span>
-        Personlig tidsplan
-      </span>
-    </div>
-  </div>
-
-  <div style="display:flex; justify-content:center; align-items:center; position:relative;">
-    <div style="position:absolute; width:320px; height:320px; border-radius:50%; background:rgba(212,133,74,0.08); top:50%; left:50%; transform:translate(-50%,-50%); pointer-events:none;"></div>
-    <div class="phone-frame">
-      <div class="phone-notch"></div>
-      <div class="phone-screen">
-        <div class="phone-header">Levain</div>
-        <div class="phone-sub">Design dit brød</div>
-
-        <div class="phone-slider-block">
-          <div class="phone-slider-label"><span>Surhed</span><span id="pp-acid-lbl">Mild</span></div>
-          <div class="phone-track">
-            <div class="phone-fill" id="pp-acid-fill" style="width:30%;background:#D4854A;"></div>
-            <div class="phone-thumb" id="pp-acid-thumb" style="left:30%;"></div>
-          </div>
-        </div>
-
-        <div class="phone-slider-block">
-          <div class="phone-slider-label"><span>Sprødhed</span><span id="pp-crust-lbl">Sprød</span></div>
-          <div class="phone-track">
-            <div class="phone-fill" id="pp-crust-fill" style="width:65%;background:#7A9E7E;"></div>
-            <div class="phone-thumb" id="pp-crust-thumb" style="left:65%;"></div>
-          </div>
-        </div>
-
-        <div class="phone-slider-block">
-          <div class="phone-slider-label"><span>Luftighed</span><span id="pp-air-lbl">Luftig</span></div>
-          <div class="phone-track">
-            <div class="phone-fill" id="pp-air-fill" style="width:70%;background:#85B7EB;"></div>
-            <div class="phone-thumb" id="pp-air-thumb" style="left:70%;"></div>
-          </div>
-        </div>
-
-        <div class="phone-result">
-          <div class="phone-result-row"><span>Hydrering</span><span id="pp-hyd">80%</span></div>
-          <div class="phone-result-row"><span>Surdej</span><span id="pp-start">16%</span></div>
-          <div class="phone-result-row"><span>Ovn</span><span id="pp-temp">245°C</span></div>
-          <div class="phone-result-row"><span>Hævetid</span><span id="pp-time">14 t</span></div>
-        </div>
-
-        <div class="phone-btn">Generer opskrift</div>
-      </div>
-    </div>
-  </div>
-</section>
 
 <!-- HOW IT WORKS -->
 <section class="section" id="how">
   <div class="section-label">Sådan virker det</div>
   <h2 class="section-title">Tre sliders.<br><em>Ét brød.</em></h2>
   <p class="section-sub">Levain oversætter dine præferencer til præcis videnskab — gram for gram, time for time.</p>
-
   <div class="steps-grid">
-    <div class="step-card">
-      <div class="step-num-big">01</div>
-      <h3>Design dit brød</h3>
-      <p>Juster surhed, sprødhed og luftighed med intuitive sliders. Ingen fagtermer, ingen komplicerede tabeller.</p>
+    <div class="step-card"><div class="step-num-big">01</div><h3>Design dit brød</h3><p>Juster surhed, sprødhed og luftighed med intuitive sliders. Ingen fagtermer, ingen komplicerede tabeller.</p></div>
+    <div class="step-card"><div class="step-num-big">02</div><h3>AI beregner opskriften</h3><p>Vores algoritme oversætter dine valg til eksakte gram-angivelser, temperaturer og en personlig tidsplan.</p></div>
+    <div class="step-card"><div class="step-num-big">03</div><h3>Bag med guide</h3><p>Følg trin-for-trin guiden med notifikationer. Upload billeder af dejen og få AI-feedback undervejs.</p></div>
+  </div>
+</section>
+
+<!-- CONCEPT -->
+<section class="concept-section" id="koncept">
+  <div>
+    <div class="section-label">Vores koncept</div>
+    <h2 class="section-title">Ingen opskrifter.<br><em>Bare dit brød.</em></h2>
+    <p class="section-sub">De fleste bagere følger en fast opskrift og håber på det bedste. Levain gør det omvendt — du bestemmer, og appen beregner præcist hvad der skal til.</p>
+    <div>
+      <span class="concept-pill"><span class="concept-pill-dot" style="background:#D4854A;"></span>Designet til begyndere</span>
+      <span class="concept-pill"><span class="concept-pill-dot" style="background:#3A5A40;"></span>Videnskabeligt funderet</span>
+      <span class="concept-pill"><span class="concept-pill-dot" style="background:#7F77DD;"></span>AI-drevet opskrift</span>
+      <span class="concept-pill"><span class="concept-pill-dot" style="background:#1D9E75;"></span>Personlig tidsplan</span>
     </div>
-    <div class="step-card">
-      <div class="step-num-big">02</div>
-      <h3>AI beregner opskriften</h3>
-      <p>Vores algoritme oversætter dine valg til eksakte gram-angivelser, temperaturer og en personlig tidsplan.</p>
-    </div>
-    <div class="step-card">
-      <div class="step-num-big">03</div>
-      <h3>Bag med guide</h3>
-      <p>Følg trin-for-trin guiden med push-notifikationer. Upload billeder af dejen, og få AI-feedback undervejs.</p>
+  </div>
+  <div style="display:flex;justify-content:center;align-items:center;position:relative;">
+    <div style="position:absolute;width:300px;height:300px;border-radius:50%;background:rgba(212,133,74,0.07);"></div>
+    <div class="phone-frame">
+      <div class="phone-notch"></div>
+      <div class="phone-screen">
+        <div class="phone-header">Levain</div>
+        <div style="font-size:9px;color:rgba(247,243,236,0.4);margin-bottom:6px;">Design dit brød</div>
+        <div class="phone-slider-block">
+          <div class="phone-slider-label"><span>Surhed</span><span id="pp-a-lbl">Mild</span></div>
+          <div class="phone-track"><div class="phone-fill" id="pp-a-fill" style="width:30%;background:#D4854A;"></div><div class="phone-thumb" id="pp-a-thumb" style="left:30%;"></div></div>
+        </div>
+        <div class="phone-slider-block">
+          <div class="phone-slider-label"><span>Sprødhed</span><span id="pp-c-lbl">Sprød</span></div>
+          <div class="phone-track"><div class="phone-fill" id="pp-c-fill" style="width:65%;background:#7A9E7E;"></div><div class="phone-thumb" id="pp-c-thumb" style="left:65%;"></div></div>
+        </div>
+        <div class="phone-slider-block">
+          <div class="phone-slider-label"><span>Luftighed</span><span id="pp-r-lbl">Luftig</span></div>
+          <div class="phone-track"><div class="phone-fill" id="pp-r-fill" style="width:70%;background:#85B7EB;"></div><div class="phone-thumb" id="pp-r-thumb" style="left:70%;"></div></div>
+        </div>
+        <div class="phone-result">
+          <div class="phone-result-row"><span>Hydrering</span><span id="pp-hyd">80%</span></div>
+          <div class="phone-result-row"><span>Surdej</span><span id="pp-start">16%</span></div>
+          <div class="phone-result-row"><span>Ovn</span><span id="pp-temp">245°C</span></div>
+          <div class="phone-result-row"><span>Hævetid</span><span id="pp-time">14 t</span></div>
+        </div>
+        <div class="phone-btn">Generer opskrift</div>
+      </div>
     </div>
   </div>
 </section>
 
+<!-- TESTIMONIALS -->
+<section class="testimonial-section">
+  <div class="section-label">Hvad folk siger</div>
+  <h2 class="section-title">Bagt med <em>Levain</em></h2>
+  <p class="section-sub">Fra begyndere der aldrig har rørt surdej til erfarne bagere der vil have mere kontrol.</p>
+  <div class="testimonial-grid">
+    <div class="testimonial-card">
+      <div class="testimonial-stars">★★★★★</div>
+      <p class="testimonial-text">"Jeg har prøvet at bage surdejsbrød i to år uden held. Med Levain lykkedes det første gang. Det er magi."</p>
+      <div class="testimonial-author">
+        <div class="testimonial-avatar" style="background:rgba(212,133,74,0.15);color:#D4854A;">M</div>
+        <div><div class="testimonial-name">Mette R.</div><div class="testimonial-role">Hjemmebager, Aarhus</div></div>
+      </div>
+    </div>
+    <div class="testimonial-card">
+      <div class="testimonial-stars">★★★★★</div>
+      <p class="testimonial-text">"Endelig en app der forklarer HVORFOR og ikke bare HVAD. Jeg forstår nu hvad hydrering og koldhævning gør."</p>
+      <div class="testimonial-author">
+        <div class="testimonial-avatar" style="background:rgba(58,90,64,0.15);color:#3A5A40;">K</div>
+        <div><div class="testimonial-name">Klaus B.</div><div class="testimonial-role">Hobbykok, København</div></div>
+      </div>
+    </div>
+    <div class="testimonial-card">
+      <div class="testimonial-stars">★★★★★</div>
+      <p class="testimonial-text">"Notifikationerne om natten er geniale. Jeg vågner præcis når dejen skal æltes. Brødet er blevet meget bedre."</p>
+      <div class="testimonial-author">
+        <div class="testimonial-avatar" style="background:rgba(55,138,221,0.15);color:#378ADD;">S</div>
+        <div><div class="testimonial-name">Sara T.</div><div class="testimonial-role">Mor til 3, Odense</div></div>
+      </div>
+    </div>
+  </div>
+</section>
 
+<!-- FAQ -->
+<section class="faq-section" id="faq">
+  <div class="section-label">Spørgsmål og svar</div>
+  <h2 class="section-title">FAQ</h2>
+  <div class="faq-grid" id="faq-grid"></div>
+</section>
 
-<!-- FOOTER -->
+<!-- DARK CTA -->
+<section class="dark-section">
+  <div style="max-width:560px;">
+    <div class="section-label">Klar til at bage?</div>
+    <h2 class="section-title">Dit første <em>perfekte</em> brød venter</h2>
+    <p class="section-sub">Opret en gratis konto og bag dit første Levain-brød i dag.</p>
+    <button class="btn-primary" onclick="openLogin()" style="font-size:15px;padding:16px 32px;">Kom i gang — det er gratis</button>
+  </div>
+</section>
+
 <!-- FOOTER -->
 <footer>
-  <div class="footer-logo">Le<span>vain</span></div>
-  <div class="footer-copy">© 2025 Levain — Alle rettigheder forbeholdes</div>
-  <div class="footer-links">
-    <a href="#">Instagram</a>
-    <a href="#">GitHub</a>
-    <a href="#">Kontakt</a>
+  <div class="footer-top">
+    <div>
+      <div class="footer-brand">Le<span>vain</span></div>
+      <div class="footer-desc">AI-drevet surdejsapp der hjælper begyndere med at bage det perfekte brød — hver gang.</div>
+    </div>
+    <div class="footer-col">
+      <div class="footer-col-title">App</div>
+      <a href="#" onclick="event.preventDefault();openLogin()">Log ind</a>
+      <a href="#" onclick="event.preventDefault();openLogin()">Opret konto</a>
+      <a href="#how">Sådan virker det</a>
+    </div>
+    <div class="footer-col">
+      <div class="footer-col-title">Ressourcer</div>
+      <a href="#faq">FAQ</a>
+      <a href="#koncept">Koncept</a>
+      <a href="#">Kontakt</a>
+    </div>
+    <div class="footer-col">
+      <div class="footer-col-title">Følg os</div>
+      <a href="#">Instagram</a>
+      <a href="#">GitHub</a>
+      <a href="#">TikTok</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="footer-copy">© 2025 Levain — Alle rettigheder forbeholdes</div>
+    <div class="footer-copy">Bygget med ❤️ af Nole & Drange</div>
   </div>
 </footer>
 
-<script>
-const STRIPE_PRICE_IDS = {
-  baker: 'price_INDSÆT_BAGER_ID_HER',
-  pro:   'price_INDSÆT_PRO_ID_HER',
-};
-
-async function handlePlan(plan) {
-  if (plan === 'free') {
-    document.getElementById('mini-pakke').scrollIntoView({ behavior: 'smooth' });
-    return;
-  }
-  const btn = event.currentTarget;
-  const orig = btn.textContent;
-  btn.disabled = true;
-  btn.textContent = 'Sender dig videre...';
-  try {
-    const res = await fetch('/api/create-checkout', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ plan }),
-    });
-    const data = await res.json();
-    if (data.error) throw new Error(data.error);
-    window.location.href = data.url;
-  } catch (err) {
-    btn.disabled = false;
-    btn.textContent = orig;
-    alert('Noget gik galt: ' + err.message);
-  }
-}
-
-const acidLbls = ['Mild','Let syrlig','Syrlig','Meget syrlig'];
-const crustLbls = ['Blød','Let sprød','Sprød','Glasagtig'];
-const airLbls = ['Tæt','Let luftig','Luftig','Open crumb'];
-
-function idx(v) { return v < 25 ? 0 : v < 50 ? 1 : v < 75 ? 2 : 3; }
-
-function updateDemo() {
-  const acid = +document.getElementById('s-acid').value;
-  const crust = +document.getElementById('s-crust').value;
-  const air = +document.getElementById('s-air').value;
-
-  document.getElementById('acid-badge').textContent = acidLbls[idx(acid)];
-  document.getElementById('crust-badge').textContent = crustLbls[idx(crust)];
-  document.getElementById('air-badge').textContent = airLbls[idx(air)];
-
-  let hydration = 65 + Math.round(air * 0.22);
-  if (air > 75 && crust > 75) hydration = Math.min(hydration, 78);
-  hydration = Math.min(hydration, 88);
-
-  let starter = 10 + Math.round(acid * 0.18);
-  if (acid > 75 && air > 75) starter = Math.min(starter, 25);
-  starter = Math.min(starter, 28);
-
-  const temp = Math.min(260, 230 + Math.round(crust * 0.25));
-  const hours = Math.round(6 + acid * 0.14 + (100 - crust) * 0.05);
-
-  document.getElementById('r-hydration').textContent = hydration + '%';
-  document.getElementById('r-starter').textContent = starter + '%';
-  document.getElementById('r-temp').textContent = temp + '°C';
-  document.getElementById('r-time').textContent = hours + ' timer';
-
-  let conflict = '';
-  if (acid > 75 && air > 75) conflict = 'Høj surhed og open crumb modarbejder hinanden — glutenet svækkes ved lang fermentering, hvilket giver en tættere krumme.';
-  else if (air > 75 && crust > 75) conflict = 'Store huller kræver høj hydrering, som giver en tyndere skorpe. Sprødheden er justeret ned automatisk.';
-  else if (crust > 75 && acid > 75) conflict = 'Kraftig skorpe og høj surhed kræver modsatrettede bagetider — opskriften balancerer begge.';
-  else conflict = 'Gode valg! Parametrene arbejder godt sammen.';
-
-  document.getElementById('r-conflict').textContent = conflict;
-}
-
-function joinWaitlist() {
-  const email = document.getElementById('email-input').value;
-  if (!email || !email.includes('@')) {
-    document.getElementById('email-input').style.outline = '2px solid #D4854A';
-    return;
-  }
-  document.getElementById('email-input').style.outline = '';
-  document.querySelector('.waitlist-form').style.display = 'none';
-  document.querySelector('.waitlist-note').style.display = 'none';
-  document.getElementById('success-msg').style.display = 'block';
-}
-
-updateDemo();
-
-// Phone mockup animation
-const ppSliders = [
-  { fill: 'pp-acid-fill',  thumb: 'pp-acid-thumb',  lbl: 'pp-acid-lbl',  color: '#D4854A', labels: ['Mild','Let syrlig','Syrlig','Meget syrlig'], targets: [28,55,72,35,28] },
-  { fill: 'pp-crust-fill', thumb: 'pp-crust-thumb', lbl: 'pp-crust-lbl', color: '#7A9E7E', labels: ['Blød','Let sprød','Sprød','Glasagtig'],       targets: [65,40,80,55,65] },
-  { fill: 'pp-air-fill',   thumb: 'pp-air-thumb',   lbl: 'pp-air-lbl',   color: '#85B7EB', labels: ['Tæt','Let luftig','Luftig','Open crumb'],      targets: [70,85,45,60,70] },
-];
-let ppVals = [28, 65, 70];
-let ppStep = 0;
-
-function ppLbl(v, lbls) { return v < 25 ? lbls[0] : v < 50 ? lbls[1] : v < 75 ? lbls[2] : lbls[3]; }
-
-function ppUpdate() {
-  ppStep = (ppStep + 1) % ppSliders[0].targets.length;
-  const targetVals = ppSliders.map(s => s.targets[ppStep]);
-  const startVals  = [...ppVals];
-  const dur = 900; const start = performance.now();
-
-  function tick(now) {
-    const t = Math.min((now - start) / dur, 1);
-    const ease = t < 0.5 ? 2*t*t : -1+(4-2*t)*t;
-    ppSliders.forEach((s, i) => {
-      const v = startVals[i] + (targetVals[i] - startVals[i]) * ease;
-      ppVals[i] = v;
-      document.getElementById(s.fill).style.width  = v + '%';
-      document.getElementById(s.thumb).style.left  = v + '%';
-      document.getElementById(s.lbl).textContent   = ppLbl(v, s.labels);
-    });
-    const hyd   = Math.round(65 + ppVals[2] * 0.22);
-    const start2 = Math.round(10 + ppVals[0] * 0.18);
-    const temp  = Math.min(260, Math.round(230 + ppVals[1] * 0.25));
-    const hours = Math.round(6 + ppVals[0] * 0.14);
-    document.getElementById('pp-hyd').textContent   = hyd + '%';
-    document.getElementById('pp-start').textContent = start2 + '%';
-    document.getElementById('pp-temp').textContent  = temp + '°C';
-    document.getElementById('pp-time').textContent  = hours + ' t';
-    if (t < 1) requestAnimationFrame(tick);
-  }
-  requestAnimationFrame(tick);
-}
-
-setInterval(ppUpdate, 2400);
-
-// ── Login modal ───────────────────────────────────────────────
-function showModalTab(tab) {
-  document.getElementById('tab-login').classList.toggle('modal-tab-active', tab === 'login');
-  document.getElementById('tab-signup').classList.toggle('modal-tab-active', tab === 'signup');
-  document.getElementById('form-login').style.display  = tab === 'login'  ? 'flex' : 'none';
-  document.getElementById('form-signup').style.display = tab === 'signup' ? 'flex' : 'none';
-}
-
-function openLogin() {
-  document.getElementById('login-modal').style.display = 'flex';
-  document.body.style.overflow = 'hidden';
-  showModalTab('login');
-}
-
-function closeLogin() {
-  document.getElementById('login-modal').style.display = 'none';
-  document.body.style.overflow = '';
-}
-
-function handleLogin() {
-  const email = document.getElementById('login-email').value;
-  const pass  = document.getElementById('login-pass').value;
-  const err   = document.getElementById('login-error');
-  if (!email) { showError(err, 'Skriv din email.'); highlight('login-email'); return; }
-  if (!pass)  { showError(err, 'Skriv din adgangskode.'); highlight('login-pass'); return; }
-  clearError(err);
-  window.location.href = 'side001.html';
-}
-
-function handleSignup() {
-  const email = document.getElementById('signup-email').value;
-  const pass  = document.getElementById('signup-pass').value;
-  const pass2 = document.getElementById('signup-pass2').value;
-  const err   = document.getElementById('signup-error');
-  if (!email) { showError(err, 'Skriv din email.'); highlight('signup-email'); return; }
-  if (!email.includes('@')) { showError(err, 'Det ser ikke ud som en gyldig email.'); highlight('signup-email'); return; }
-  if (!pass)  { showError(err, 'Vælg en adgangskode.'); highlight('signup-pass'); return; }
-  if (pass.length < 8) { showError(err, 'Adgangskoden skal være mindst 8 tegn.'); highlight('signup-pass'); return; }
-  if (!pass2) { showError(err, 'Gentag din adgangskode.'); highlight('signup-pass2'); return; }
-  if (pass !== pass2) { showError(err, 'Adgangskoderne matcher ikke — prøv igen.'); highlight('signup-pass2'); return; }
-  clearError(err);
-  window.location.href = 'side001.html';
-}
-
-function showError(el, msg) {
-  el.textContent = msg;
-  el.classList.add('visible');
-}
-function clearError(el) {
-  el.textContent = '';
-  el.classList.remove('visible');
-}
-function highlight(id) {
-  const el = document.getElementById(id);
-  el.style.borderColor = '#E24B4A';
-  el.focus();
-  el.addEventListener('input', () => el.style.borderColor = '', { once: true });
-}
-
-// Luk modal ved klik udenfor
-document.getElementById('login-modal').addEventListener('click', function(e) {
-  if (e.target === this) closeLogin();
-});
-</script>
+<!-- DARK MODE TOGGLE -->
+<button class="dark-toggle" id="dark-toggle" onclick="toggleDark()" title="Skift tema">🌙</button>
 
 <!-- LOGIN MODAL -->
-<style>
-  .modal-overlay {
-    display: none; position: fixed; inset: 0; z-index: 999;
-    background: rgba(44,30,16,0.45);
-    align-items: center; justify-content: center;
-    padding: 20px;
-  }
-  .modal-box {
-    background: var(--warm-white);
-    border-radius: 24px;
-    border: 0.5px solid var(--border);
-    width: 100%; max-width: 400px;
-    padding: 36px 32px;
-    position: relative;
-  }
-  .modal-close {
-    position: absolute; top: 16px; right: 16px;
-    width: 32px; height: 32px; border-radius: 50%;
-    background: var(--cream); border: 0.5px solid var(--border);
-    cursor: pointer; font-size: 16px; color: var(--text-muted);
-    display: flex; align-items: center; justify-content: center;
-    line-height: 1;
-  }
-  .modal-close:hover { background: var(--border); }
-  .modal-logo {
-    font-family: 'Playfair Display', serif;
-    font-size: 20px; color: var(--brown-dark);
-    margin-bottom: 20px; text-align: center;
-  }
-  .modal-logo span { font-style: italic; color: var(--amber); }
-  .modal-tabs {
-    display: flex; background: var(--cream);
-    border-radius: 100px; padding: 4px;
-    margin-bottom: 24px;
-  }
-  .modal-tab {
-    flex: 1; text-align: center; padding: 8px;
-    font-size: 13px; font-weight: 500; color: var(--text-muted);
-    border-radius: 100px; cursor: pointer; transition: all 0.2s;
-    border: none; background: transparent;
-  }
-  .modal-tab-active {
-    background: var(--warm-white);
-    color: var(--brown-dark);
-    box-shadow: 0 1px 4px rgba(44,30,16,0.08);
-  }
-  .modal-form {
-    display: flex; flex-direction: column; gap: 12px;
-  }
-  .modal-label {
-    font-size: 12px; color: var(--text-muted);
-    margin-bottom: 4px; display: block;
-  }
-  .modal-input {
-    width: 100%; padding: 11px 14px;
-    border: 0.5px solid var(--border);
-    border-radius: var(--border-radius-md);
-    background: var(--cream);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 14px; color: var(--brown-dark);
-    outline: none; transition: border-color 0.2s;
-  }
-  .modal-input:focus { border-color: var(--amber); }
-  .modal-submit {
-    width: 100%; padding: 13px;
-    background: var(--brown-dark); color: var(--cream);
-    border: none; border-radius: 100px;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 14px; font-weight: 500;
-    cursor: pointer; margin-top: 4px;
-    transition: background 0.2s;
-  }
-  .modal-submit:hover { background: var(--brown-mid); }
-  .modal-divider {
-    display: flex; align-items: center; gap: 12px;
-    margin: 4px 0;
-    font-size: 12px; color: var(--text-muted);
-  }
-  .modal-divider::before, .modal-divider::after {
-    content: ''; flex: 1; height: 0.5px;
-    background: var(--border);
-  }
-  .google-btn {
-    width: 100%; padding: 11px;
-    background: var(--cream); color: var(--brown-dark);
-    border: 0.5px solid var(--border);
-    border-radius: 100px;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 14px; font-weight: 500;
-    cursor: pointer; display: flex;
-    align-items: center; justify-content: center; gap: 10px;
-    transition: background 0.2s;
-  }
-  .google-btn:hover { background: #f0ebe3; }
-  .google-icon { width: 18px; height: 18px; }
-  .modal-error {
-    font-size: 13px; color: #A32D2D;
-    background: #FCEBEB; border: 0.5px solid #F09595;
-    border-radius: 10px; padding: 10px 12px;
-    display: none; line-height: 1.5;
-  }
-  .modal-error.visible { display: block; }
-</style>
-
 <div class="modal-overlay" id="login-modal">
   <div class="modal-box">
     <button class="modal-close" onclick="closeLogin()">✕</button>
     <div class="modal-logo">Le<span>vain</span></div>
-
     <div class="modal-tabs">
       <button class="modal-tab modal-tab-active" id="tab-login" onclick="showModalTab('login')">Log ind</button>
       <button class="modal-tab" id="tab-signup" onclick="showModalTab('signup')">Opret konto</button>
     </div>
-
-    <!-- LOG IND -->
-    <form id="form-login" class="modal-form" onsubmit="handleLogin(event)">
-      <button type="button" class="google-btn" onclick="alert('Google login kræver Firebase/Auth0 opsætning')">
-        <svg class="google-icon" viewBox="0 0 18 18">
-          <path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z"/>
-          <path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.258c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z"/>
-          <path fill="#FBBC05" d="M3.964 10.707A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.707V4.961H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.039l3.007-2.332z"/>
-          <path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.961L3.964 7.293C4.672 5.163 6.656 3.58 9 3.58z"/>
-        </svg>
+    <form id="form-login" class="modal-form">
+      <button type="button" class="google-btn" onclick="alert('Google login kræver Firebase opsætning')">
+        <svg width="18" height="18" viewBox="0 0 18 18"><path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z"/><path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.258c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z"/><path fill="#FBBC05" d="M3.964 10.707A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.707V4.961H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.039l3.007-2.332z"/><path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.961L3.964 7.293C4.672 5.163 6.656 3.58 9 3.58z"/></svg>
         Fortsæt med Google
       </button>
       <div class="modal-divider">eller</div>
-      <div>
-        <label class="modal-label">Email</label>
-        <input class="modal-input" type="email" id="login-email" placeholder="din@email.dk">
-      </div>
-      <div>
-        <label class="modal-label">Adgangskode</label>
-        <input class="modal-input" type="password" id="login-pass" placeholder="••••••••">
-      </div>
-      <button type="button" class="modal-submit" onclick="handleLogin()">Log ind</button>
+      <div><label class="modal-label">Email</label><input class="modal-input" type="email" id="login-email" placeholder="din@email.dk"></div>
+      <div><label class="modal-label">Adgangskode</label><input class="modal-input" type="password" id="login-pass" placeholder="••••••••"></div>
       <div class="modal-error" id="login-error"></div>
+      <button type="button" class="modal-submit" onclick="handleLogin()">Log ind</button>
     </form>
-
-    <!-- OPRET KONTO -->
-    <form id="form-signup" class="modal-form" style="display:none" onsubmit="handleSignup(event)">
-      <button type="button" class="google-btn" onclick="alert('Google login kræver Firebase/Auth0 opsætning')">
-        <svg class="google-icon" viewBox="0 0 18 18">
-          <path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z"/>
-          <path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.258c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z"/>
-          <path fill="#FBBC05" d="M3.964 10.707A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.707V4.961H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.039l3.007-2.332z"/>
-          <path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.961L3.964 7.293C4.672 5.163 6.656 3.58 9 3.58z"/>
-        </svg>
+    <form id="form-signup" class="modal-form" style="display:none;">
+      <button type="button" class="google-btn" onclick="alert('Google login kræver Firebase opsætning')">
+        <svg width="18" height="18" viewBox="0 0 18 18"><path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z"/><path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.258c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z"/><path fill="#FBBC05" d="M3.964 10.707A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.707V4.961H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.039l3.007-2.332z"/><path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.961L3.964 7.293C4.672 5.163 6.656 3.58 9 3.58z"/></svg>
         Opret med Google
       </button>
       <div class="modal-divider">eller</div>
-      <div>
-        <label class="modal-label">Email</label>
-        <input class="modal-input" type="email" id="signup-email" placeholder="din@email.dk">
-      </div>
-      <div>
-        <label class="modal-label">Adgangskode</label>
-        <input class="modal-input" type="password" id="signup-pass" placeholder="mindst 8 tegn">
-      </div>
-      <div>
-        <label class="modal-label">Gentag adgangskode</label>
-        <input class="modal-input" type="password" id="signup-pass2" placeholder="••••••••">
-      </div>
+      <div><label class="modal-label">Email</label><input class="modal-input" type="email" id="signup-email" placeholder="din@email.dk"></div>
+      <div><label class="modal-label">Adgangskode</label><input class="modal-input" type="password" id="signup-pass" placeholder="mindst 8 tegn"></div>
+      <div><label class="modal-label">Gentag adgangskode</label><input class="modal-input" type="password" id="signup-pass2" placeholder="••••••••"></div>
       <div class="modal-error" id="signup-error"></div>
       <button type="button" class="modal-submit" onclick="handleSignup()">Opret konto</button>
     </form>
-
   </div>
 </div>
 
+<script>
+// DARK MODE
+function toggleDark(){
+  document.body.classList.toggle('dark-mode');
+  document.getElementById('dark-toggle').textContent = document.body.classList.contains('dark-mode') ? '☀️' : '🌙';
+  localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
+}
+if(localStorage.getItem('darkMode')==='true'){ document.body.classList.add('dark-mode'); document.getElementById('dark-toggle').textContent='☀️'; }
+
+// LOGIN
+function openLogin(){ document.getElementById('login-modal').classList.add('open'); document.body.style.overflow='hidden'; showModalTab('login'); }
+function closeLogin(){ document.getElementById('login-modal').classList.remove('open'); document.body.style.overflow=''; }
+function showModalTab(tab){
+  document.getElementById('tab-login').classList.toggle('modal-tab-active', tab==='login');
+  document.getElementById('tab-signup').classList.toggle('modal-tab-active', tab==='signup');
+  document.getElementById('form-login').style.display = tab==='login' ? 'flex' : 'none';
+  document.getElementById('form-signup').style.display = tab==='signup' ? 'flex' : 'none';
+}
+document.getElementById('login-modal').addEventListener('click', function(e){ if(e.target===this) closeLogin(); });
+
+function showErr(id, msg){ var el=document.getElementById(id); el.textContent=msg; el.classList.add('visible'); }
+function clearErr(id){ var el=document.getElementById(id); el.textContent=''; el.classList.remove('visible'); }
+
+function handleLogin(){
+  var email=document.getElementById('login-email').value;
+  var pass=document.getElementById('login-pass').value;
+  if(!email){ showErr('login-error','Skriv din email.'); return; }
+  if(!pass){ showErr('login-error','Skriv din adgangskode.'); return; }
+  clearErr('login-error');
+  window.location.href='side001.html';
+}
+
+function handleSignup(){
+  var email=document.getElementById('signup-email').value;
+  var pass=document.getElementById('signup-pass').value;
+  var pass2=document.getElementById('signup-pass2').value;
+  if(!email){ showErr('signup-error','Skriv din email.'); return; }
+  if(!email.includes('@')){ showErr('signup-error','Ugyldig email.'); return; }
+  if(!pass){ showErr('signup-error','Vælg en adgangskode.'); return; }
+  if(pass.length<8){ showErr('signup-error','Adgangskoden skal være mindst 8 tegn.'); return; }
+  if(pass!==pass2){ showErr('signup-error','Adgangskoderne matcher ikke.'); return; }
+  clearErr('signup-error');
+  window.location.href='side001.html';
+}
+
+// FAQ
+var faqs = [
+  {q:'Hvad er surdej?', a:'Surdej er en naturlig gærkultur lavet af mel og vand, hvor vildtgær og mælkesyrebakterier fermenterer og hæver brødet. Det giver en karakteristisk syrlig smag og holder brødet friskt længere.'},
+  {q:'Behøver jeg erfaring for at bruge Levain?', a:'Nej! Levain er designet specifikt til begyndere. Appen forklarer hvert trin og guider dig gennem hele processen med præcise mål og klokkeslæt.'},
+  {q:'Hvad er hydrering?', a:'Hydrering er forholdet mellem vand og mel i dejen — udtrykt i procent. 75% hydrering betyder 75g vand per 100g mel. Høj hydrering giver en luftigere krumme, lav hydrering giver et tættere brød.'},
+  {q:'Hvor lang tid tager det at bage surdejsbrød?', a:'Det varierer fra 12 timer (hurtig opskrift) til 48 timer (weekend-opskrift med koldhævning). Det meste af tiden er passiv hævetid — du behøver kun at gøre noget i korte perioder.'},
+  {q:'Hvad er stretch & fold?', a:'Stretch & fold er en teknik hvor du strækker dejen ud og folder den ind over sig selv. Det styrker glutennetværket uden at ælte dejen, og bruges typisk 3-4 gange under hævningen.'},
+  {q:'Kan jeg bruge appen gratis?', a:'Ja! Du kan oprette en gratis konto og komme i gang med det samme. Appen er under udvikling og alle features er tilgængelige under beta.'},
+];
+
+document.getElementById('faq-grid').innerHTML = faqs.map(function(f,i){
+  return '<div class="faq-item" id="faq-'+i+'" onclick="toggleFaq('+i+')">'
+    +'<div class="faq-q"><span>'+f.q+'</span><span class="faq-icon">+</span></div>'
+    +'<div class="faq-a">'+f.a+'</div>'
+    +'</div>';
+}).join('');
+
+function toggleFaq(i){
+  var item=document.getElementById('faq-'+i);
+  var wasOpen=item.classList.contains('open');
+  document.querySelectorAll('.faq-item').forEach(function(el){ el.classList.remove('open'); });
+  if(!wasOpen) item.classList.add('open');
+}
+
+// PHONE ANIMATION
+var ppSliders=[
+  {fill:'pp-a-fill',thumb:'pp-a-thumb',lbl:'pp-a-lbl',color:'#D4854A',labels:['Mild','Let syrlig','Syrlig','Meget syrlig'],targets:[28,55,72,35,28]},
+  {fill:'pp-c-fill',thumb:'pp-c-thumb',lbl:'pp-c-lbl',color:'#7A9E7E',labels:['Blød','Let sprød','Sprød','Glasagtig'],targets:[65,40,80,55,65]},
+  {fill:'pp-r-fill',thumb:'pp-r-thumb',lbl:'pp-r-lbl',color:'#85B7EB',labels:['Tæt','Let luftig','Luftig','Open crumb'],targets:[70,85,45,60,70]},
+];
+var ppVals=[28,65,70], ppStep=0;
+function ppLbl(v,lbls){ return v<25?lbls[0]:v<50?lbls[1]:v<75?lbls[2]:lbls[3]; }
+function ppUpdate(){
+  ppStep=(ppStep+1)%ppSliders[0].targets.length;
+  var targets=ppSliders.map(function(s){return s.targets[ppStep];});
+  var starts=[].concat(ppVals);
+  var dur=900, start=performance.now();
+  function tick(now){
+    var t=Math.min((now-start)/dur,1);
+    var ease=t<0.5?2*t*t:-1+(4-2*t)*t;
+    ppSliders.forEach(function(s,i){
+      var v=starts[i]+(targets[i]-starts[i])*ease;
+      ppVals[i]=v;
+      var f=document.getElementById(s.fill), th=document.getElementById(s.thumb), lb=document.getElementById(s.lbl);
+      if(f)f.style.width=v+'%';
+      if(th)th.style.left=v+'%';
+      if(lb)lb.textContent=ppLbl(v,s.labels);
+    });
+    var hyd=Math.round(65+ppVals[2]*0.22);
+    var st=Math.round(10+ppVals[0]*0.18);
+    var tmp=Math.min(260,Math.round(230+ppVals[1]*0.25));
+    var hrs=Math.round(6+ppVals[0]*0.14);
+    var h=document.getElementById('pp-hyd'),s2=document.getElementById('pp-start'),tp=document.getElementById('pp-temp'),ti=document.getElementById('pp-time');
+    if(h)h.textContent=hyd+'%';
+    if(s2)s2.textContent=st+'%';
+    if(tp)tp.textContent=tmp+'°C';
+    if(ti)ti.textContent=hrs+' t';
+    if(t<1) requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+}
+setInterval(ppUpdate, 2400);
+</script>
 </body>
 </html>
